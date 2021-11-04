@@ -1,0 +1,106 @@
+---
+
+# creating a minimal ca
+
+- name: Certificates | Internal | Minimal CA | Creating ca directory
+  ansible.builtin.file:
+    path: "{{ CERT_CONFIG.ca.path }}"
+    state: directory
+
+- name: Certificates | Internal | Minimal CA | Generate ca private key (encrypted key)
+  community.crypto.openssl_privatekey:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    cipher: "{{ CERT_CONFIG.ca.cipher }}"
+    size: "{{ CERT_CONFIG.ca.key_size }}"
+    type: "{{ CERT_CONFIG.ca.key_type }}"
+    regenerate: "{{ CERT_CONFIG.ca.regenerate }}"
+    mode: "{{ CERT_CONFIG.mode_key }}"
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+
+- name: Certificates | Internal | Minimal CA | Generate ca private key (plain key)
+  community.crypto.openssl_privatekey:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    size: "{{ CERT_CONFIG.ca.key_size }}"
+    type: "{{ CERT_CONFIG.ca.key_type }}"
+    regenerate: "{{ CERT_CONFIG.ca.regenerate }}"
+    mode: "{{ CERT_CONFIG.mode_key }}"
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is none
+
+# NOTE: for details see https://www.openssl.org/docs/man1.0.2/man5/x509v3_config.html
+
+- name: Certificates | Internal | Minimal CA | Generating ca signing-request (encrypted key)
+  community.crypto.openssl_csr:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
+    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    basic_constraints: ['CA:TRUE', 'pathlen:2']
+    basic_constraints_critical: true
+    key_usage: ['cRLSign', 'digitalSignature', 'keyCertSign']
+    key_usage_critical: true
+    digest: "{{ CERT_CONFIG.ca.digest }}"
+    common_name: "{{ CERT_CONFIG.ca.cn }}"
+    organization_name: "{{ CERT_CONFIG.ca.org }}"
+    country_name: "{{ CERT_CONFIG.ca.country }}"
+    state_or_province_name: "{{ CERT_CONFIG.ca.state }}"
+    locality_name: "{{ CERT_CONFIG.ca.locality }}"
+    email_address: "{{ CERT_CONFIG.ca.email }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+
+- name: Certificates | Internal | Minimal CA | Generating ca signing-request (plain key)
+  community.crypto.openssl_csr:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
+    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    basic_constraints: ['CA:TRUE', 'pathlen:2']
+    basic_constraints_critical: true
+    key_usage: ['cRLSign', 'digitalSignature', 'keyCertSign']
+    key_usage_critical: true
+    digest: "{{ CERT_CONFIG.ca.digest }}"
+    common_name: "{{ CERT_CONFIG.ca.cn }}"
+    organization_name: "{{ CERT_CONFIG.ca.org }}"
+    country_name: "{{ CERT_CONFIG.ca.country }}"
+    state_or_province_name: "{{ CERT_CONFIG.ca.state }}"
+    locality_name: "{{ CERT_CONFIG.ca.locality }}"
+    email_address: "{{ CERT_CONFIG.ca.email }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is none
+
+- name: Certificates | Internal | Minimal CA | Generating ca certificate (encrypted key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    csr_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
+    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    provider: selfsigned
+    valid_in: "{{ CERT_CONFIG.ca.valid_days }}d"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+
+- name: Certificates | Internal | Minimal CA | Generating ca certificate (plain key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    csr_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
+    provider: selfsigned
+    valid_in: "{{ CERT_CONFIG.ca.valid_days }}d"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.ca.pwd | default(none, true) is none

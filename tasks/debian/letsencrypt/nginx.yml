@@ -1,0 +1,29 @@
+---
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Install package
+  ansible.builtin.package:
+    name: ['python3-certbot-nginx']
+    state: present
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Checking sites
+  ansible.builtin.shell: 'ls /etc/nginx/sites-enabled/'
+  changed_when: false
+  register: enabled_nginx_sites
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Deploying temporary apache site
+  ansible.builtin.template:
+    src: 'templates/etc/nginx/sites-enabled/le_dummy.j2'
+    dest: '/etc/nginx/sites-enabled/tmp_le_dummy'
+    owner: 'root'
+    group: 'root'
+    mode: 0644
+  register: tmp_site_enable
+  when: enabled_nginx_sites.stdout == ''
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Reloading apache
+  ansible.builtin.systemd:
+    name: 'nginx.service'
+    state: reloaded
+  when:
+    - enabled_nginx_sites.stdout == ''
+    - tmp_site_enable.changed

@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# ansibleguy.infra_certs - dummy site used for letsencrypt certbot
+
+<VirtualHost *:80>
+  ServerName dummy.letsencrypt.localhost
+  ServerAdmin webmaster@localhost
+  ErrorLog {{ APACHE_CONFIG.log.path }}/error.log
+  CustomLog {{ APACHE_CONFIG.log.path }}/access.log combined
+</VirtualHost>

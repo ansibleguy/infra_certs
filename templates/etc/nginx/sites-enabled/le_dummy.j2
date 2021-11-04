@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+# ansibleguy.infra_certs - dummy site used for letsencrypt certbot
+
+server {
+  listen 80;
+  server_name dummy.letsencrypt.localhost;
+  error_log {{ NGINX_CONFIG.log.path }}/error.log;
+  access_log {{ NGINX_CONFIG.log.path }}/access.log;
+}

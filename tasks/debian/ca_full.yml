@@ -1,0 +1,9 @@
+---
+
+# creating ca with full pki
+# to be continued (;
+
+- name: Certificates | Debian | Internal | CA | Not yet implemented
+  ansible.builtin.debug:
+    msg: "The certificate mode 'ca_full' is not yet implemented!"
+  tags: ca

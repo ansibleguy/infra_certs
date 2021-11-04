@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+# ansibleguy.infra_certs
+
+[Unit]
+Description=Timer to renew LetsEncrypt Certificates using certbot
+
+[Timer]
+OnCalendar={{ CERT_CONFIG.letsencrypt.renew_timer }}
+Persistent=false
+WakeSystem=false
+
+[Install]
+WantedBy=multi-user.target

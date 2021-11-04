@@ -1,0 +1,202 @@
+---
+
+- name: Certificates | Internal | Cert | Generate private key (encrypted)
+  community.crypto.openssl_privatekey:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    cipher: "{{ CERT_CONFIG.cert.cipher }}"
+    size: "{{ CERT_CONFIG.cert.key_size }}"
+    type: "{{ CERT_CONFIG.cert.key_type }}"
+    passphrase: "{{ CERT_CONFIG.cert.pwd }}"
+    regenerate: "{{ CERT_CONFIG.cert.regenerate }}"
+    mode: "{{ CERT_CONFIG.mode_key }}"
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
+  no_log: true
+  when: CERT_CONFIG.cert.pwd | default(none, true) is not none
+
+- name: Certificates | Internal | Cert | Generate private key (plain)
+  community.crypto.openssl_privatekey:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    size: "{{ CERT_CONFIG.cert.key_size }}"
+    type: "{{ CERT_CONFIG.cert.key_type }}"
+    regenerate: "{{ CERT_CONFIG.cert.regenerate }}"
+    mode: "{{ CERT_CONFIG.mode_key }}"
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
+  no_log: true
+  when: CERT_CONFIG.cert.pwd | default(none, true) is none
+
+- name: Certificates | Internal | Cert | Setting SAN
+  ansible.builtin.set_fact:
+    cert_san: "{% for domain in CERT_CONFIG.cert.domains %}
+    {% if domain | valid_domain %}DNS:{{ domain }}{% if not loop.last %},{% endif %}{% endif %}
+    {% endfor %}
+    {% for ip in CERT_CONFIG.cert.ips %}
+    {% if ip | valid_ip %},IP:{{ ip }}{% endif %}
+    {% endfor %}"
+
+- name: Certificates | Internal | Cert | Generating signing-request (encrypted key)
+  community.crypto.openssl_csr:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase : "{{ CERT_CONFIG.cert.pwd }}"
+    digest: "{{ CERT_CONFIG.cert.digest }}"
+    common_name: "{{ CERT_CONFIG.cert.cn }}"
+    organization_name: "{{ CERT_CONFIG.cert.org }}"
+    country_name: "{{ CERT_CONFIG.cert.country }}"
+    state_or_province_name: "{{ CERT_CONFIG.cert.state }}"
+    locality_name: "{{ CERT_CONFIG.cert.locality }}"
+    email_address: "{{ CERT_CONFIG.cert.email }}"
+    extended_key_usage: "{{ CERT_CONFIG.cert.key_usage }}"
+    ocsp_must_staple: "{{ CERT_CONFIG.cert.ocsp_staple }}"
+    crl_distribution_points: "{{ CERT_CONFIG.cert.crl_distribution }}"
+    subject_alt_name: "{{ cert_san | replace(' ', '') | default('DNS:localhost', true) }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.cert.pwd | default(none, true) is not none
+
+- name: Certificates | Internal | Cert | Generating signing-request (plain key)
+  community.crypto.openssl_csr:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    digest: "{{ CERT_CONFIG.cert.digest }}"
+    common_name: "{{ CERT_CONFIG.cert.cn }}"
+    organization_name: "{{ CERT_CONFIG.cert.org }}"
+    country_name: "{{ CERT_CONFIG.cert.country }}"
+    state_or_province_name: "{{ CERT_CONFIG.cert.state }}"
+    locality_name: "{{ CERT_CONFIG.cert.locality }}"
+    email_address: "{{ CERT_CONFIG.cert.email }}"
+    extended_key_usage: "{{ CERT_CONFIG.cert.key_usage }}"
+    ocsp_must_staple: "{{ CERT_CONFIG.cert.ocsp_staple }}"
+    crl_distribution_points: "{{ CERT_CONFIG.cert.crl_distribution }}"
+    subject_alt_name: "{{ cert_san | replace(' ', '') | default('DNS:localhost', true) }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when: CERT_CONFIG.cert.pwd | default(none, true) is none
+
+- name: Certificates | Internal | Cert | Self-Signed | Generating certificate (encrypted key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    provider: selfsigned
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.cert.pwd | default(none, true) is not none
+    - CERT_CONFIG.mode == 'selfsigned'
+
+- name: Certificates | Internal | Cert | Self-Signed | Generating certificate (plain key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    provider: selfsigned
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.cert.pwd | default(none, true) is none
+    - CERT_CONFIG.mode == 'selfsigned'
+
+- name: Certificates | Internal | Cert | CA-Signed | Generating certificate (encrypted key; encrypted ca-key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    provider: ownca
+    ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    ownca_privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.ca.pwd | default(none, true) is not none
+    - CERT_CONFIG.cert.pwd | default(none, true) is not none
+    - CERT_CONFIG.mode == 'ca'
+
+- name: Certificates | Internal | Cert | CA-Signed | Generating certificate (plain key; encrypted ca-key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    provider: ownca
+    ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    ownca_privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.ca.pwd | default(none, true) is not none
+    - CERT_CONFIG.cert.pwd | default(none, true) is none
+    - CERT_CONFIG.mode == 'ca'
+
+- name: Certificates | Internal | Cert | CA-Signed | Generating certificate (encrypted key; plain ca-key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    provider: ownca
+    ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.ca.pwd | default(none, true) is none
+    - CERT_CONFIG.cert.pwd | default(none, true) is not none
+    - CERT_CONFIG.mode == 'ca'
+
+- name: Certificates | Internal | Cert | CA-Signed | Generating certificate (plain key; plain ca-key)
+  community.crypto.x509_certificate:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
+    privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
+    csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
+    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    provider: ownca
+    ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
+    ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  no_log: true
+  when:
+    - CERT_CONFIG.ca.pwd | default(none, true) is none
+    - CERT_CONFIG.cert.pwd | default(none, true) is none
+    - CERT_CONFIG.mode == 'ca'
+
+- name: Certificates | Internal | Cert | CA-Signed | Creating chained certificate
+  ansible.builtin.shell: "cat {{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}
+  {{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }} >
+  {{ CERT_CONFIG.path }}/{{ name }}.chain.{{ CERT_CONFIG.extension_cert }}"
+  args:
+    creates: "{{ CERT_CONFIG.path }}/{{ name }}.chain.{{ CERT_CONFIG.extension_cert }}"
+  when: CERT_CONFIG.mode == 'ca'
+
+- name: Certificates | Internal | Cert | CA-Signed | Setting privileges on chained certificate
+  ansible.builtin.file:
+    path: "{{ CERT_CONFIG.path }}/{{ name }}.chain.{{ CERT_CONFIG.extension_cert }}"
+    mode: "{{ CERT_CONFIG.mode_cert }}"
+    owner: "{{ CERT_CONFIG.owner_cert }}"
+    group: "{{ CERT_CONFIG.group_cert }}"
+  when: CERT_CONFIG.mode == 'ca'

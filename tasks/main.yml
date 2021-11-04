@@ -1,5 +1,25 @@
 ---
 
-- name: ROLE | Processing debian config
-  ansible.builtin.import_tasks: debian/main.yml
-  when: "ansible_distribution|lower in ['debian', 'ubuntu']"
+- name: Certificates | Checking config
+  ansible.builtin.fail:
+    msg: "The required configuration was not provided!
+    Needed: 'certs'"
+  when: certs is undefined
+
+- name: Certificates | Setting name
+  ansible.builtin.set_fact:
+    name: "{% if CERT_CONFIG.cert.name is not none %}{{ CERT_CONFIG.cert.name | safe_key }}{% else %}{{ CERT_CONFIG.cert.cn | safe_key }}{% endif %}"
+
+- name: Certificates | Internal signed
+  ansible.builtin.include_tasks: internal/main.yml
+  when: "CERT_CONFIG.mode in ['ca_full', 'ca', 'selfsigned']"
+
+- name: Certificates | Internal | CA
+  ansible.builtin.include_tasks: debian/ca_full.yml
+  when: CERT_CONFIG.mode == 'ca_full'
+
+- name: Certificates | Debian | Letsencrypt
+  ansible.builtin.include_tasks: debian/letsencrypt/main.yml
+  when:
+    - CERT_CONFIG.mode == 'le_certbot'
+    - "ansible_distribution|lower in ['debian', 'ubuntu']"

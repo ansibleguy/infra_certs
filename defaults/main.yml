@@ -1,8 +1,85 @@
 ---
 
 # default config => is overwritten by provided config
-default_app: {}
+default_certs:
+  mode: 'selfsigned'  # selfsigned, ca, ca_min, le_certbot
+  path: '/etc/certs'
 
-APP_CONFIG: "{{ default_app | combine(app, recursive=true) }}"
+  cert:
+    name:
+    key_size: 4096  # 1024, 2048, 4096
+    key_type: 'RSA'
+    cipher: 'AES-256-CBC'  # see: 'openssl list -cipher-algorithms'
+    digest: 'sha256'
+    regenerate: 'partial_idempotence'
+    pwd:
+    domains: []
+    ips: []
 
-default_instance_config: {}
+    # certificate config
+    cn: 'Ansible Certificate'
+    org:
+    ou:
+    country:
+    state:
+    locality:
+    email:  # if using letsencrypt you might pass an email per domain => see letsencrypt-certs
+    key_usage: 'serverAuth'  # serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, ocspSigning
+    ocsp_staple: false
+    crl_distribution: []
+#      - full_name:
+#        - "URI:https://ca.example.com/revocations.crl"
+#        crl_issuer:
+#          - "URI:https://ca.example.com/"
+#        reasons:
+#          - key_compromise
+#          - ca_compromise
+#          - cessation_of_operation
+    valid_days: 730
+
+  mode_key: '0640'
+  mode_cert: '0644'
+
+  owner_key: 'root'
+  group_key: 'root'
+  owner_cert: 'root'
+  group_cert: 'root'
+
+  extension_cert: 'crt'
+  extension_key: 'key'
+  extension_csr: 'csr'
+
+  letsencrypt:
+    path: '/etc/letsencrypt'
+    service:  # apache, nginx
+    renew_timer: 'Mon *-*-* 01:00:00'
+    verbosity: 'v'
+    certs: {}  # see 'default_le_certbot_cert_config'
+    renew: false  # if a renewal should be started by the role; the renewal service will auto-renew the certificates otherwise
+
+  ca:
+    path: '/etc/certs/ca'
+    valid_days: 7300
+    key_size: 8192  # 1024, 2048, 4096, 8192
+    key_type: 'RSA'
+    cipher: 'AES-256-CBC'  # see: 'openssl list -cipher-algorithms'
+    digest: 'sha512'
+    regenerate: 'partial_idempotence'
+    pwd:
+
+    # certificate config
+    cn: 'CA Certificate'
+    org:
+    ou:
+    country:
+    state:
+    locality:
+    email:
+
+
+CERT_CONFIG: "{{ default_certs | combine(certs, recursive=true) }}"
+
+default_le_certbot_cert_config:
+  domains: []
+  state: 'present'
+  email:

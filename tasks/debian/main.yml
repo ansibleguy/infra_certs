@@ -1,6 +1,0 @@
----
-
-- name: ROLE | Debian | Task
-  ansible.builtin.apt:
-    pkg: "{{ something }}"
-  tags: [base]

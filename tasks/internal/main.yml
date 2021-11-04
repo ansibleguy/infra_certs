@@ -1,0 +1,22 @@
+---
+
+- name: Certificates | Internal | Installing dependencies
+  ansible.builtin.package:
+    pkg: ['python3-cryptography']
+  tags: [certs, ca]
+
+- name: Certificates | Internal | Creating cert directory
+  ansible.builtin.file:
+    path: "{{ CERT_CONFIG.path }}"
+    state: directory
+  tags: [certs, ca]
+
+- name: Certificates | Internal | Minimal CA
+  ansible.builtin.import_tasks: ca_minimal.yml
+  when: CERT_CONFIG.mode == 'ca'
+  tags: [ca]
+
+- name: Certificates | Internal | Cert
+  ansible.builtin.import_tasks: cert.yml
+  when: "CERT_CONFIG.mode in ['ca', 'selfsigned']"
+  tags: [certs]

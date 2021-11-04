@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+# ansibleguy.infra_certs
+
+[Unit]
+Description=Service to renew LetsEncrypt Certificates using certbot
+
+[Service]
+Type=oneshot
+ExecStart=certbot renew -{{ CERT_CONFIG.letsencrypt.verbosity }} --non-interactive --agree-tos --renew-with-new-domains
+SuccessExitStatus=0
