@@ -39,7 +39,7 @@
   community.crypto.openssl_csr:
     path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
-    privatekey_passphrase : "{{ CERT_CONFIG.cert.pwd }}"
+    privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
     digest: "{{ CERT_CONFIG.cert.digest }}"
     common_name: "{{ CERT_CONFIG.cert.cn }}"
     organization_name: "{{ CERT_CONFIG.cert.org }}"

@@ -1,6 +1,6 @@
 # external roles and collections to download
 # install: ansible-galaxy install -r requirements.yml
 
-collections: []
+collections:
   - name: 'community.crypto'
     source: 'https://galaxy.ansible.com'
