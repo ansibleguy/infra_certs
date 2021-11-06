@@ -39,6 +39,7 @@
     le_path: "{{ CERT_CONFIG.letsencrypt.path }}/live/{{ name }}"
   loop_control:
     loop_var: cert_item
+  no_log: true
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
 

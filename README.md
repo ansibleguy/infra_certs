@@ -38,6 +38,9 @@
   * all Characters except "0-9a-zA-Z." are removed
   * the file-extension (_crt/chain.crt/key/csr_) will be appended
 
+
+* **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
+
 ## Requirements
 
 * Community collection: ```ansible-galaxy install -r requirements.yml```
