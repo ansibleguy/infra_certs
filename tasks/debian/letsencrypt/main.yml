@@ -36,7 +36,7 @@
   vars:
     le_cert: "{{ default_le_certbot_cert_config | combine(cert_item.value, recursive=true) }}"
     le_name: "{{ cert_item.key | safe_key }}"
-    le_path: "{{ CERT_CONFIG.letsencrypt.path }}/live/{{ name }}"
+    le_path: "{{ CERT_CONFIG.letsencrypt.path }}/live/{{ le_name }}"
   loop_control:
     loop_var: cert_item
   no_log: true

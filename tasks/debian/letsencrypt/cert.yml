@@ -4,11 +4,14 @@
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
   ansible.builtin.file:
-    path: "{{ le_path }}"
+    path: "{{ item }}"
     state: directory
     owner: 'root'
     group: 'root'
     mode: 0755
+  loop:
+    - "{{ CERT_CONFIG.path }}"
+    - "{{ le_path }}"
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Command to be executed"
   ansible.builtin.debug:
@@ -18,7 +21,7 @@
     --rsa-key-size {{ le_cert.key_size | default(CERT_CONFIG.cert.key_size, true) }}
     --config-dir {{ CERT_CONFIG.letsencrypt.path }}
     {% for domain in le_cert.domains %}{% if domain | valid_domain %}--domain {{ domain }} {% endif %}{% endfor %}
-    {% if le_cert.email is not none %}--email {{ le_cert.email }} {% elif CERT_CONFIG.cert.email | default(none, true) is not none %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
+    {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
   when: existing_certs_raw.stdout.find(name) == -1
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Starting certbot"
@@ -28,7 +31,7 @@
     --rsa-key-size {{ le_cert.key_size | default(CERT_CONFIG.cert.key_size, true) }}
     --config-dir {{ CERT_CONFIG.letsencrypt.path }}
     {% for domain in le_cert.domains %}{% if domain | valid_domain %}--domain {{ domain }} {% endif %}{% endfor %}
-    {% if le_cert.email is not none %}--email {{ le_cert.email }} {% elif CERT_CONFIG.cert.email | default(none, true) is not none %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
+    {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
   when: existing_certs_raw.stdout.find(name) == -1
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Linking cert"

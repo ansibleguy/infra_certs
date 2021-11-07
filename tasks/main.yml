@@ -6,10 +6,6 @@
     Needed: 'certs'"
   when: certs is undefined
 
-- name: Certificates | Setting name
-  ansible.builtin.set_fact:
-    name: "{% if CERT_CONFIG.cert.name is not none %}{{ CERT_CONFIG.cert.name | safe_key }}{% else %}{{ CERT_CONFIG.cert.cn | safe_key }}{% endif %}"
-
 - name: Certificates | Internal signed
   ansible.builtin.include_tasks: internal/main.yml
   when: "CERT_CONFIG.mode in ['ca_full', 'ca', 'selfsigned']"
