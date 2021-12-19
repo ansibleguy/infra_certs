@@ -1,5 +1,7 @@
 # Certificate Generator Role
 
+Ansible Role to create certificates to use on a linux server.
+
 **Tested:**
 * Debian 11
 
