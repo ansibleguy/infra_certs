@@ -85,7 +85,7 @@
     privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
     provider: selfsigned
-    valid_in: "{{ CERT_CONFIG.ca.valid_days }}d"
+    selfsigned_not_after: "+{{ CERT_CONFIG.ca.valid_days }}d"
     mode: "{{ CERT_CONFIG.mode_cert }}"
     owner: "{{ CERT_CONFIG.owner_cert }}"
     group: "{{ CERT_CONFIG.group_cert }}"
@@ -98,7 +98,7 @@
     privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     csr_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
     provider: selfsigned
-    valid_in: "{{ CERT_CONFIG.ca.valid_days }}d"
+    selfsigned_not_after: "+{{ CERT_CONFIG.ca.valid_days }}d"
     mode: "{{ CERT_CONFIG.mode_cert }}"
     owner: "{{ CERT_CONFIG.owner_cert }}"
     group: "{{ CERT_CONFIG.group_cert }}"

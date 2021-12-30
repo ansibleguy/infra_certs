@@ -87,7 +87,7 @@
     privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
     provider: selfsigned
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    selfsigned_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     mode: "{{ CERT_CONFIG.mode_cert }}"
     owner: "{{ CERT_CONFIG.owner_cert }}"
     group: "{{ CERT_CONFIG.group_cert }}"
@@ -102,7 +102,7 @@
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
     provider: selfsigned
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
+    selfsigned_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     mode: "{{ CERT_CONFIG.mode_cert }}"
     owner: "{{ CERT_CONFIG.owner_cert }}"
     group: "{{ CERT_CONFIG.group_cert }}"
@@ -117,8 +117,8 @@
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
     privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
     provider: ownca
+    ownca_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
     ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     ownca_privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
@@ -136,8 +136,8 @@
     path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
     provider: ownca
+    ownca_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
     ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     ownca_privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
@@ -156,8 +156,8 @@
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
     privatekey_passphrase: "{{ CERT_CONFIG.cert.pwd }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
     provider: ownca
+    ownca_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
     ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     mode: "{{ CERT_CONFIG.mode_cert }}"
@@ -174,8 +174,8 @@
     path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_cert }}"
     privatekey_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_key }}"
     csr_path: "{{ CERT_CONFIG.path }}/{{ name }}.{{ CERT_CONFIG.extension_csr }}"
-    valid_in: "{{ CERT_CONFIG.cert.valid_days }}d"
     provider: ownca
+    ownca_not_after: "+{{ CERT_CONFIG.cert.valid_days }}d"
     ownca_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
     ownca_privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
     mode: "{{ CERT_CONFIG.mode_cert }}"
