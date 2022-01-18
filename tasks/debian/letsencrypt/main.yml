@@ -70,7 +70,7 @@
     owner: 'root'
     group: 'root'
     mode: 0644
-  with_items:
+  loop:
     - 'ansibleguy.infra_certs.LetsEncryptCertbot.service'
     - 'ansibleguy.infra_certs.LetsEncryptCertbot.timer'
 
