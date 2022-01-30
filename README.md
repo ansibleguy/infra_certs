@@ -1,4 +1,4 @@
-# Certificate Generator Role
+# Ansible Role - Certificate Generator
 
 Ansible Role to create certificates to use on a linux server.
 
