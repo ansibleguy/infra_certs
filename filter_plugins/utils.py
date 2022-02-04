@@ -10,6 +10,7 @@ class FilterModule(object):
             "valid_domain": self.valid_domain,
             "valid_ip": self.valid_ip,
             "check_email": self.check_email,
+            "le_domains_changed": self.le_domains_changed,
         }
 
     @staticmethod
@@ -39,3 +40,42 @@ class FilterModule(object):
 
         return True
 
+    @staticmethod
+    def le_domains_changed(running_config: str, cert_key: str, config_domains: list) -> bool:
+        changed = False
+        run_domains = []
+
+        for non_domain in ['_', '*']:
+            # removing wildcards
+            try:
+                config_domains.remove(non_domain)
+            except ValueError:
+                pass
+
+        block_started = False
+        for line in running_config.split('\n'):
+            if block_started:
+                if line.find('Certificate Name:') != -1:
+                    # block ended
+                    break
+
+                elif line.find('Domains:') != -1:
+                    run_domains = line.split(': ')[1].split(' ')
+
+            elif line.find(f"Certificate Name: {cert_key}") != -1:
+                block_started = True
+
+        # checking if any domain was added
+        for domain in config_domains:
+            if domain not in run_domains:
+                changed = True
+                break
+
+        if not changed:
+            # checking if any domain was removed
+            for domain in run_domains:
+                if domain not in config_domains:
+                    changed = True
+                    break
+
+        return changed

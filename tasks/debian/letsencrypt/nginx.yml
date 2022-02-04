@@ -6,9 +6,10 @@
     state: present
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Checking sites
-  ansible.builtin.shell: 'ls /etc/nginx/sites-enabled/'
+  ansible.builtin.command: 'ls /etc/nginx/sites-enabled/'
   changed_when: false
   register: enabled_nginx_sites
+  check_mode: false
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Deploying temporary apache site
   ansible.builtin.template:

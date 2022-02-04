@@ -6,9 +6,10 @@
     state: present
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Apache | Checking sites
-  ansible.builtin.shell: 'ls /etc/apache2/sites-enabled/'
+  ansible.builtin.command: 'ls /etc/apache2/sites-enabled/'
   changed_when: false
   register: enabled_apache_sites
+  check_mode: false
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Apache | Deploying temporary apache site
   ansible.builtin.template:

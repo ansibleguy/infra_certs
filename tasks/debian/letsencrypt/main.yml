@@ -24,9 +24,10 @@
   when: CERT_CONFIG.letsencrypt.service == 'nginx'
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Pulling existing certs
-  ansible.builtin.shell: 'certbot certificates'
+  ansible.builtin.command: 'certbot certificates'
   register: existing_certs_raw
   changed_when: false
+  check_mode: false
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Adding certificates
   ansible.builtin.include_tasks: cert.yml
@@ -37,11 +38,11 @@
     le_cert: "{{ default_le_certbot_cert_config | combine(cert_item.value, recursive=true) }}"
     le_name: "{{ cert_item.key | safe_key }}"
     le_path: "{{ CERT_CONFIG.letsencrypt.path }}/live/{{ le_name }}"
+    le_changed: "{{ existing_certs_raw.stdout | le_domains_changed(le_name, le_cert.domains) }}"
   loop_control:
     loop_var: cert_item
   no_log: true
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
-
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Removing certificates
   ansible.builtin.command: "certbot revoke --cert-name {{ le_name }} && certbot delete --cert-name {{ le_name }}"

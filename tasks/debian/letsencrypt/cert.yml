@@ -1,7 +1,5 @@
 ---
 
-# todo: check domains registered in current certificate (certbot certificates) and remove it if there are more than configured before re-configuring it
-
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
   ansible.builtin.file:
     path: "{{ item }}"
@@ -13,7 +11,7 @@
     - "{{ CERT_CONFIG.path }}"
     - "{{ le_path }}"
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Command to be executed"
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Certbot command (FYI)"
   ansible.builtin.debug:
     msg: "certbot certonly --non-interactive --agree-tos --no-redirect 
     --{{ CERT_CONFIG.letsencrypt.service }} --cert-name {{ le_name }}
@@ -22,9 +20,9 @@
     --config-dir {{ CERT_CONFIG.letsencrypt.path }}
     {% for domain in le_cert.domains %}{% if domain | valid_domain %}--domain {{ domain }} {% endif %}{% endfor %}
     {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
-  when: existing_certs_raw.stdout.find(name) == -1
+  when: le_changed
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Starting certbot"
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Running certbot"
   ansible.builtin.command: "certbot certonly --non-interactive --agree-tos --no-redirect
     --{{ CERT_CONFIG.letsencrypt.service }} --cert-name {{ le_name }}
     -{{ CERT_CONFIG.letsencrypt.verbosity }}
@@ -32,7 +30,7 @@
     --config-dir {{ CERT_CONFIG.letsencrypt.path }}
     {% for domain in le_cert.domains %}{% if domain | valid_domain %}--domain {{ domain }} {% endif %}{% endfor %}
     {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
-  when: existing_certs_raw.stdout.find(name) == -1
+  when: le_changed
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Linking cert"
   ansible.builtin.file:
