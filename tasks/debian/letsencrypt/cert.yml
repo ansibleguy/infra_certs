@@ -13,7 +13,7 @@
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Certbot command (FYI)"
   ansible.builtin.debug:
-    msg: "certbot certonly --non-interactive --agree-tos --no-redirect 
+    msg: "certbot certonly --non-interactive --agree-tos --no-redirect
     --{{ CERT_CONFIG.letsencrypt.service }} --cert-name {{ le_name }}
     -{{ CERT_CONFIG.letsencrypt.verbosity }}
     --rsa-key-size {{ le_cert.key_size | default(CERT_CONFIG.cert.key_size, true) }}

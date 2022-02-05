@@ -55,12 +55,9 @@ class FilterModule(object):
         block_started = False
         for line in running_config.split('\n'):
             if block_started:
-                if line.find('Certificate Name:') != -1:
-                    # block ended
-                    break
-
-                elif line.find('Domains:') != -1:
+                if line.find('Domains:') != -1:
                     run_domains = line.split(': ')[1].split(' ')
+                    break
 
             elif line.find(f"Certificate Name: {cert_key}") != -1:
                 block_started = True

@@ -27,14 +27,14 @@ default_certs:
     key_usage: 'serverAuth'  # serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, ocspSigning
     ocsp_staple: false
     crl_distribution: []
-#      - full_name:
-#        - "URI:https://ca.example.com/revocations.crl"
-#        crl_issuer:
-#          - "URI:https://ca.example.com/"
-#        reasons:
-#          - key_compromise
-#          - ca_compromise
-#          - cessation_of_operation
+    #      - full_name:
+    #        - "URI:https://ca.example.com/revocations.crl"
+    #        crl_issuer:
+    #          - "URI:https://ca.example.com/"
+    #        reasons:
+    #          - key_compromise
+    #          - ca_compromise
+    #          - cessation_of_operation
     valid_days: 730
 
   mode_key: '0640'
