@@ -1,19 +1,12 @@
 ---
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Checking config
-  ansible.builtin.fail:
-    msg: "The required configuration was not provided!
-    Needed: 'certs.letsencrypt.certs', 'certs.letsencrypt.service',
-    'certs.letsencrypt.email or certs.letsencrypt.email.certs.email'"
-  when: >
-    CERT_CONFIG.letsencrypt.certs | length == 0 or
-    CERT_CONFIG.letsencrypt.service is none | default(none, true) or
-    (CERT_CONFIG.letsencrypt.email | default(none, true) is none and not CERT_CONFIG.letsencrypt.certs|check_email)
-
-- name: Certificates | Debian | LetsEncrypt Certbot | Checking service
-  ansible.builtin.fail:
-    msg: "You need to supply a supported LetsEncrypt Certbot service to use! (apache/nginx)"
-  when: "CERT_CONFIG.letsencrypt.service | default(none, true) is none or CERT_CONFIG.letsencrypt.service not in ['apache', 'nginx']"
+  ansible.builtin.assert:
+    that:
+      - CERT_CONFIG.letsencrypt.certs | length > 0
+      - CERT_CONFIG.letsencrypt.service | default(none, true) is not none
+      - CERT_CONFIG.letsencrypt.email | default(none, true) is not none or CERT_CONFIG.letsencrypt.certs|check_email
+      - "CERT_CONFIG.letsencrypt.service in ['apache', 'nginx']"
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Configure for Apache2
   ansible.builtin.import_tasks: apache.yml
