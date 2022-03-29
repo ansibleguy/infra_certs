@@ -2,6 +2,10 @@
 
 Ansible Role to create certificates to use on a linux server.
 
+[![Ansible Galaxy](https://img.shields.io/ansible/role/56802)](https://galaxy.ansible.com/ansibleguy/infra_certs)
+[![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F56802%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ansibleguy/infra_certs)
+
+
 **Tested:**
 * Debian 11
 
