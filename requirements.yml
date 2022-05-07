@@ -4,4 +4,3 @@
 
 collections:
   - name: 'community.crypto'
-    source: 'https://galaxy.ansible.com'
