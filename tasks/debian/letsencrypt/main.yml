@@ -37,8 +37,21 @@
   no_log: true
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Removing certificates
-  ansible.builtin.command: "certbot revoke --cert-name {{ le_name }} && certbot delete --cert-name {{ le_name }}"
+# todo: task gets stuck
+- name: Certificates | Debian | LetsEncrypt Certbot | Revoking certificates
+  ansible.builtin.command: "certbot revoke --cert-name {{ le_name }}"
+  when:
+    - le_cert.state != 'present'
+    - existing_certs_raw.stdout.find(le_name) != -1
+  vars:
+    le_cert: "{{ default_le_certbot_cert_config | combine(cert_item.value, recursive=true) }}"
+    le_name: "{{ cert_item.key | safe_key }}"
+  loop_control:
+    loop_var: cert_item
+  with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Deleting certificates
+  ansible.builtin.command: "certbot delete --cert-name {{ le_name }}"
   when:
     - le_cert.state != 'present'
     - existing_certs_raw.stdout.find(le_name) != -1

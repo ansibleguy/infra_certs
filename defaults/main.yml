@@ -2,7 +2,7 @@
 
 # default config => is overwritten by provided config
 default_certs:
-  mode: 'selfsigned'  # selfsigned, ca, ca_min, le_certbot
+  mode: 'selfsigned'  # selfsigned, ca, pki, le_certbot
   path: '/etc/certs'
 
   cert:

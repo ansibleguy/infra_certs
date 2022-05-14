@@ -8,11 +8,11 @@
 
 - name: Certificates | Internal signed
   ansible.builtin.include_tasks: internal/main.yml
-  when: "CERT_CONFIG.mode in ['ca_full', 'ca', 'selfsigned']"
+  when: "CERT_CONFIG.mode in ['pki', 'ca', 'selfsigned']"
 
 - name: Certificates | Internal | CA
-  ansible.builtin.include_tasks: debian/ca_full.yml
-  when: CERT_CONFIG.mode == 'ca_full'
+  ansible.builtin.include_tasks: debian/pki.yml
+  when: CERT_CONFIG.mode == 'pki'
 
 - name: Certificates | Debian | Letsencrypt
   ansible.builtin.include_tasks: debian/letsencrypt/main.yml

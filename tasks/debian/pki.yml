@@ -5,5 +5,5 @@
 
 - name: Certificates | Debian | Internal | CA | Not yet implemented
   ansible.builtin.debug:
-    msg: "The certificate mode 'ca_full' is not yet implemented!"
+    msg: "The certificate mode 'pki' is not yet implemented!"
   tags: ca

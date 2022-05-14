@@ -24,7 +24,7 @@ Ansible Role to create certificates to use on a linux server.
       * Supported for Nginx and Apache
       * Host needs to have a valid public dns record pointed at it
       * Needs to be publicly reachable over port 80/tcp
-    * _Use a proper **Certificate Authority** (_full PKI_) to create **signed certificates**_ => not yet available
+    * _Use a proper **Certificate Authority** (_full PKI_) to create **signed certificates**_ => **not yet available**
 
 
   * **Default config**:
@@ -46,6 +46,7 @@ Ansible Role to create certificates to use on a linux server.
 
 
 * **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
+
 
 ## Requirements
 
@@ -84,6 +85,8 @@ Example for Self-Signed config:
 ```yaml
 certs:
   mode: 'selfsigned'
+  # choose 'ca' instead if you use dns-names
+  #   some browsers won't let you connect when using self-signed ones
   path: '/etc/nginx/ssl'
   group_key: 'nginx'
   owner_cert: 'nginx'
