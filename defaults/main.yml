@@ -1,9 +1,9 @@
 ---
 
 # default config => is overwritten by provided config
-default_certs:
+defaults_certs:
   mode: 'selfsigned'  # selfsigned, ca, pki, le_certbot
-  path: '/etc/certs'
+  path: '/etc/ssl/ansible'
 
   cert:
     name:
@@ -76,10 +76,11 @@ default_certs:
     locality:
     email:
 
+CERT_CONFIG: "{{ defaults_certs | combine(certs, recursive=true) }}"
 
-CERT_CONFIG: "{{ default_certs | combine(certs, recursive=true) }}"
-
-default_le_certbot_cert_config:
+default_le_certbot_cert:
   domains: []
   state: 'present'
   email:
+
+debug: false

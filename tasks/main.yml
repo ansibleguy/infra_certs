@@ -1,10 +1,23 @@
 ---
 
 - name: Certificates | Checking config
-  ansible.builtin.fail:
-    msg: "The required configuration was not provided!
-    Needed: 'certs'"
-  when: certs is undefined
+  ansible.builtin.assert:
+    that:
+      - certs is defined
+
+- name: Certificates | Showing debug info - user provided config
+  ansible.builtin.debug:
+    var: certs
+  when:
+    - debug is defined
+    - debug
+
+- name: Certificates | Showing debug info - running config
+  ansible.builtin.debug:
+    var: CERT_CONFIG
+  when:
+    - debug is defined
+    - debug
 
 - name: Certificates | Internal signed
   ansible.builtin.include_tasks: internal/main.yml

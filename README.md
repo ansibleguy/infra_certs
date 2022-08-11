@@ -143,3 +143,8 @@ There are also some useful **tags** available:
 * selfsigned
 * config
 * certs
+
+To debug errors - you can set the 'debug' variable at runtime:
+```bash
+ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
+```
