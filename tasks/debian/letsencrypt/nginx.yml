@@ -11,7 +11,7 @@
   register: enabled_nginx_sites
   check_mode: false
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Deploying temporary apache site
+- name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Deploying temporary nginx site
   ansible.builtin.template:
     src: 'templates/etc/nginx/sites-enabled/le_dummy.j2'
     dest: '/etc/nginx/sites-enabled/tmp_le_dummy'
