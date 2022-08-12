@@ -194,6 +194,7 @@
   args:
     creates: "{{ CERT_CONFIG.path }}/{{ name }}.chain.{{ CERT_CONFIG.extension_cert }}"
   when: CERT_CONFIG.mode == 'ca'
+  check_mode: false
 
 - name: Certificates | Internal | Cert | CA-Signed | Setting privileges on chained certificate
   ansible.builtin.file:
