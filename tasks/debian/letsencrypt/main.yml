@@ -17,10 +17,17 @@
   when: CERT_CONFIG.letsencrypt.service == 'nginx'
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Pulling existing certs
-  ansible.builtin.command: 'certbot certificates'
+  ansible.builtin.command: "certbot certificates --config-dir {{ CERT_CONFIG.letsencrypt.path }}{% if debug or testing %} --staging{% endif %}"
   register: existing_certs_raw
   changed_when: false
   check_mode: false
+
+- name: Certificates | Debian | LetsEncrypt Certbot | Existing certificates
+  ansible.builtin.debug:
+    var: existing_certs_raw.stdout
+  when:
+    - debug is defined
+    - debug
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Adding certificates
   ansible.builtin.include_tasks: cert.yml
@@ -39,7 +46,7 @@
 
 # todo: task gets stuck
 - name: Certificates | Debian | LetsEncrypt Certbot | Revoking certificates
-  ansible.builtin.command: "certbot revoke --cert-name {{ le_name }}{% if debug %} --staging{% endif %}"
+  ansible.builtin.command: "certbot revoke --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
   when:
     - le_cert.state != 'present'
     - existing_certs_raw.stdout.find(le_name) != -1
@@ -51,7 +58,7 @@
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Deleting certificates
-  ansible.builtin.command: "certbot delete --cert-name {{ le_name }}{% if debug %} --staging{% endif %}"
+  ansible.builtin.command: "certbot delete --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
   when:
     - le_cert.state != 'present'
     - existing_certs_raw.stdout.find(le_name) != -1
@@ -89,6 +96,6 @@
     state: started
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Running renewal
-  ansible.builtin.command: "certbot renew --force-renewal{% if debug %} --staging{% endif %}"
+  ansible.builtin.command: "certbot renew --force-renewal{% if debug or testing %} --staging{% endif %}"
   when: CERT_CONFIG.letsencrypt.renew
   ignore_errors: true

@@ -1,5 +1,12 @@
 ---
 
+- name: Certificates | Internal | Checking config
+  ansible.builtin.assert:
+    that:
+      - CERT_CONFIG.cert.name or name
+      - CERT_CONFIG.cert.cn
+      - CERT_CONFIG.mode != 'ca' or CERT_CONFIG.ca.cn
+
 - name: Certificates | Internal | Installing dependencies
   ansible.builtin.package:
     pkg: ['python3-cryptography']
@@ -13,10 +20,14 @@
 
 - name: Certificates | Internal | Minimal CA
   ansible.builtin.import_tasks: ca_minimal.yml
+  vars:
+    config_ca: "{{ CERT_CONFIG }}"
   when: CERT_CONFIG.mode == 'ca'
   tags: [ca]
 
 - name: Certificates | Internal | Cert
   ansible.builtin.import_tasks: cert.yml
+  vars:
+    config_cert: "{{ CERT_CONFIG }}"
   when: "CERT_CONFIG.mode in ['ca', 'selfsigned']"
   tags: [certs]

@@ -1,0 +1,30 @@
+---
+
+# adding dummy certificates for ansible-molecule testing
+
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | DUMMY | Setting dummy config"
+  ansible.builtin.set_fact:
+    dummy_cert:
+      path: "{{ le_path }}"
+      cert:
+        cn: 'Molecule Dummy Cert'
+        domains: "{{ le_cert.domains }}"
+        email: "{{ le_cert.email }}"
+
+      ca:
+        cn: 'Molecule Dummy CA'
+        email: "{{ le_cert.email }}"
+
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | DUMMY | Installing dependencies"
+  ansible.builtin.package:
+    pkg: ['python3-cryptography']
+
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | DUMMY | Creating dummy CA"
+  ansible.builtin.include_tasks: internal/ca_minimal.yml
+  vars:
+    config_ca: "{{ CERT_CONFIG | combine(dummy_cert, recursive=true) }}"
+
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | DUMMY | Creating dummy Certificate"
+  ansible.builtin.include_tasks: internal/cert.yml
+  vars:
+    config_cert: "{{ CERT_CONFIG | combine(dummy_cert, recursive=true) }}"

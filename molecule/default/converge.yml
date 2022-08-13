@@ -1,0 +1,134 @@
+---
+
+# todo: test revoking
+
+- name: Converge Internal
+  hosts: test-ag-certs-internal-{{ lookup('ansible.builtin.env', 'USER') }}
+  roles:
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'selfsigned'
+          path: '/etc/ssl/test1'
+
+          cert:
+            name: 'self_srv'
+            domains: ['cert.test.ansibleguy.net']
+            ips: ['192.168.0.1']
+            cn: 'SelfSigned Server Cert'
+            org: 'AnsibleGuy Test'
+            email: 'testmaster@ansibleguy.net'
+            ou: 'Test'
+            country: 'AT'
+            state: 'Styria'
+            locality: 'Unknown'
+            valid_days: 5
+            key_usage: 'serverAuth'
+            crl_distribution:
+              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
+              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              reasons: ['key_compromise', 'ca_compromise']
+
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'selfsigned'
+          path: '/etc/ssl/test2'
+
+          cert:
+            name: 'self_cli'
+            cn: 'SelfSigned Client Cert'
+            key_usage: 'clientAuth'
+
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'selfsigned'
+          path: '/etc/ssl/test3'
+
+          cert:
+            name: 'self_other'
+            san_other: 'DNS:cert.templates.ansibleguy.net,email:other@cert.template.ansibleguy.net'
+            cn: 'SelfSigned Other Cert'
+
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'ca'
+          path: '/etc/ssl/test3'
+
+          cert:
+            name: 'self_minca_srv'
+            domains: ['cert.test.ansibleguy.net']
+            ips: ['192.168.0.1']
+            cn: 'CA-Signed Server Cert'
+            org: 'AnsibleGuy Test'
+            email: 'testmaster@ansibleguy.net'
+            ou: 'Test'
+            country: 'AT'
+            state: 'Styria'
+            locality: 'Unknown'
+            valid_days: 5
+            key_usage: 'serverAuth'
+            crl_distribution:
+              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
+              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              reasons: ['key_compromise', 'ca_compromise']
+
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'ca'
+          path: '/etc/ssl/test4'
+
+          cert:
+            name: 'self_minca_cli'
+            cn: 'CA-Signed Client Cert'
+            key_usage: 'clientAuth'
+
+    - role: ansibleguy.infra_certs
+      vars:
+        certs:
+          mode: 'ca'
+          path: '/etc/ssl/test5'
+
+          cert:
+            name: 'self_minca_pwd'
+            domains: ['cert.test.ansibleguy.net']
+            ips: [ '192.168.0.1' ]
+            cn: 'CA-Signed Server Cert'
+            pwd: 'Nope.'
+            key_usage: 'serverAuth'
+            crl_distribution:
+              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
+              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              reasons: ['key_compromise', 'ca_compromise']
+
+          ca:
+            path: '/etc/ssl/test5/ca'
+            pwd: 'YouWantMyTreasure?YouCanHaveIt!SearchForIt-SomewhereOutThere-Hidden-IsTheBiggestTreasureOfTheWorld.'
+            cn: 'SelfSigned CA Cert'
+            org: 'AnsibleGuy Test'
+            email: 'testmaster@ansibleguy.net'
+            ou: 'Test'
+            country: 'AT'
+            state: 'Styria'
+            locality: 'Unknown'
+            valid_days: 5
+
+- name: Converge LetsEncrypt
+  hosts: test-ag-certs-letsencrypt-{{ lookup('ansible.builtin.env', 'USER') }}
+  vars:
+    testing: true  # target letsencrypt-staging
+    certs:
+      mode: 'le_certbot'
+      letsencrypt:
+        certs:
+          test:
+            domains: ['infra-certs.test.ansibleguy.net']
+            email: 'testmaster@ansibleguy.net'
+        path: '/etc/ssl/test'
+        renew_timer: 'Mon *-*-* 03:00:00'
+        service: 'nginx'
+  roles:
+    - ansibleguy.infra_certs

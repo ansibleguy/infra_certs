@@ -1,5 +1,7 @@
 ---
 
+# todo: allow for a dictionary of certs to be passed
+
 - name: Certificates | Checking config
   ansible.builtin.assert:
     that:
@@ -18,6 +20,12 @@
   when:
     - debug is defined
     - debug
+
+- name: Certificates | Checking for invalid domains/hostnames
+  ansible.builtin.pause:
+    prompt: "It seems you have configured an invalid domain/hostname: '{{ item }}' - do you want to continue?"
+  when: not item | valid_hostname
+  loop: "{{ CERT_CONFIG.cert.domains }}"
 
 - name: Certificates | Internal signed
   ansible.builtin.include_tasks: internal/main.yml

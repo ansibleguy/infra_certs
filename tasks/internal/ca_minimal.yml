@@ -4,103 +4,109 @@
 
 - name: Certificates | Internal | Minimal CA | Creating ca directory
   ansible.builtin.file:
-    path: "{{ CERT_CONFIG.ca.path }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}"
     state: directory
 
 - name: Certificates | Internal | Minimal CA | Generate ca private key (encrypted key)
   community.crypto.openssl_privatekey:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
-    passphrase: "{{ CERT_CONFIG.ca.pwd }}"
-    cipher: "{{ CERT_CONFIG.ca.cipher }}"
-    size: "{{ CERT_CONFIG.ca.key_size }}"
-    type: "{{ CERT_CONFIG.ca.key_type }}"
-    regenerate: "{{ CERT_CONFIG.ca.regenerate }}"
-    mode: "{{ CERT_CONFIG.mode_key }}"
-    owner: "{{ CERT_CONFIG.owner_key }}"
-    group: "{{ CERT_CONFIG.group_key }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
+    passphrase: "{{ config_ca.ca.pwd }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    cipher: "{{ config_ca.ca.cipher }}"
+    size: "{{ config_ca.ca.key_size }}"
+    type: "{{ config_ca.ca.key_type }}"
+    regenerate: "{{ config_ca.ca.regenerate }}"
+    mode: "{{ config_ca.mode_key }}"
+    owner: "{{ config_ca.owner_key }}"
+    group: "{{ config_ca.group_key }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+  when: config_ca.ca.pwd | default(none, true) is not none
 
 - name: Certificates | Internal | Minimal CA | Generate ca private key (plain key)
   community.crypto.openssl_privatekey:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
-    size: "{{ CERT_CONFIG.ca.key_size }}"
-    type: "{{ CERT_CONFIG.ca.key_type }}"
-    regenerate: "{{ CERT_CONFIG.ca.regenerate }}"
-    mode: "{{ CERT_CONFIG.mode_key }}"
-    owner: "{{ CERT_CONFIG.owner_key }}"
-    group: "{{ CERT_CONFIG.group_key }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    size: "{{ config_ca.ca.key_size }}"
+    type: "{{ config_ca.ca.key_type }}"
+    regenerate: "{{ config_ca.ca.regenerate }}"
+    mode: "{{ config_ca.mode_key }}"
+    owner: "{{ config_ca.owner_key }}"
+    group: "{{ config_ca.group_key }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is none
+  when: config_ca.ca.pwd | default(none, true) is none
 
 # NOTE: for details see https://www.openssl.org/docs/man1.0.2/man5/x509v3_config.html
 
 - name: Certificates | Internal | Minimal CA | Generating ca signing-request (encrypted key)
   community.crypto.openssl_csr:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
-    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
-    privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_csr }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    privatekey_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
+    privatekey_passphrase: "{{ config_ca.ca.pwd }}"
     basic_constraints: ['CA:TRUE', 'pathlen:2']
     basic_constraints_critical: true
     key_usage: ['cRLSign', 'digitalSignature', 'keyCertSign']
     key_usage_critical: true
-    digest: "{{ CERT_CONFIG.ca.digest }}"
-    common_name: "{{ CERT_CONFIG.ca.cn }}"
-    organization_name: "{{ CERT_CONFIG.ca.org }}"
-    country_name: "{{ CERT_CONFIG.ca.country }}"
-    state_or_province_name: "{{ CERT_CONFIG.ca.state }}"
-    locality_name: "{{ CERT_CONFIG.ca.locality }}"
-    email_address: "{{ CERT_CONFIG.ca.email }}"
-    mode: "{{ CERT_CONFIG.mode_cert }}"
-    owner: "{{ CERT_CONFIG.owner_cert }}"
-    group: "{{ CERT_CONFIG.group_cert }}"
+    digest: "{{ config_ca.ca.digest }}"
+    common_name: "{{ config_ca.ca.cn }}"
+    organization_name: "{{ config_ca.ca.org }}"
+    country_name: "{{ config_ca.ca.country }}"
+    state_or_province_name: "{{ config_ca.ca.state }}"
+    locality_name: "{{ config_ca.ca.locality }}"
+    email_address: "{{ config_ca.ca.email }}"
+    mode: "{{ config_ca.mode_cert }}"
+    owner: "{{ config_ca.owner_cert }}"
+    group: "{{ config_ca.group_cert }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+  when: config_ca.ca.pwd | default(none, true) is not none
 
 - name: Certificates | Internal | Minimal CA | Generating ca signing-request (plain key)
   community.crypto.openssl_csr:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
-    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_csr }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    privatekey_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
     basic_constraints: ['CA:TRUE', 'pathlen:2']
     basic_constraints_critical: true
     key_usage: ['cRLSign', 'digitalSignature', 'keyCertSign']
     key_usage_critical: true
-    digest: "{{ CERT_CONFIG.ca.digest }}"
-    common_name: "{{ CERT_CONFIG.ca.cn }}"
-    organization_name: "{{ CERT_CONFIG.ca.org }}"
-    country_name: "{{ CERT_CONFIG.ca.country }}"
-    state_or_province_name: "{{ CERT_CONFIG.ca.state }}"
-    locality_name: "{{ CERT_CONFIG.ca.locality }}"
-    email_address: "{{ CERT_CONFIG.ca.email }}"
-    mode: "{{ CERT_CONFIG.mode_cert }}"
-    owner: "{{ CERT_CONFIG.owner_cert }}"
-    group: "{{ CERT_CONFIG.group_cert }}"
+    digest: "{{ config_ca.ca.digest }}"
+    common_name: "{{ config_ca.ca.cn }}"
+    organization_name: "{{ config_ca.ca.org }}"
+    country_name: "{{ config_ca.ca.country }}"
+    state_or_province_name: "{{ config_ca.ca.state }}"
+    locality_name: "{{ config_ca.ca.locality }}"
+    email_address: "{{ config_ca.ca.email }}"
+    mode: "{{ config_ca.mode_cert }}"
+    owner: "{{ config_ca.owner_cert }}"
+    group: "{{ config_ca.group_cert }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is none
+  when: config_ca.ca.pwd | default(none, true) is none
 
 - name: Certificates | Internal | Minimal CA | Generating ca certificate (encrypted key)
   community.crypto.x509_certificate:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
-    csr_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
-    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
-    privatekey_passphrase: "{{ CERT_CONFIG.ca.pwd }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_cert }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    csr_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_csr }}"
+    privatekey_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
+    privatekey_passphrase: "{{ config_ca.ca.pwd }}"
     provider: selfsigned
-    selfsigned_not_after: "+{{ CERT_CONFIG.ca.valid_days }}d"
-    mode: "{{ CERT_CONFIG.mode_cert }}"
-    owner: "{{ CERT_CONFIG.owner_cert }}"
-    group: "{{ CERT_CONFIG.group_cert }}"
+    selfsigned_not_after: "+{{ config_ca.ca.valid_days }}d"
+    mode: "{{ config_ca.mode_cert }}"
+    owner: "{{ config_ca.owner_cert }}"
+    group: "{{ config_ca.group_cert }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is not none
+  when: config_ca.ca.pwd | default(none, true) is not none
 
 - name: Certificates | Internal | Minimal CA | Generating ca certificate (plain key)
   community.crypto.x509_certificate:
-    path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_cert }}"
-    privatekey_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_key }}"
-    csr_path: "{{ CERT_CONFIG.ca.path }}/ca.{{ CERT_CONFIG.extension_csr }}"
+    path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_cert }}"
+    select_crypto_backend: "{{ config_ca.ca.backend }}"
+    privatekey_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_key }}"
+    csr_path: "{{ config_ca.ca.path | default(config_ca.path, true) }}/ca.{{ config_ca.extension_csr }}"
     provider: selfsigned
-    selfsigned_not_after: "+{{ CERT_CONFIG.ca.valid_days }}d"
-    mode: "{{ CERT_CONFIG.mode_cert }}"
-    owner: "{{ CERT_CONFIG.owner_cert }}"
-    group: "{{ CERT_CONFIG.group_cert }}"
+    selfsigned_not_after: "+{{ config_ca.ca.valid_days }}d"
+    mode: "{{ config_ca.mode_cert }}"
+    owner: "{{ config_ca.owner_cert }}"
+    group: "{{ config_ca.group_cert }}"
   no_log: true
-  when: CERT_CONFIG.ca.pwd | default(none, true) is none
+  when: config_ca.ca.pwd | default(none, true) is none

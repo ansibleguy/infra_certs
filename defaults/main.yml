@@ -9,12 +9,13 @@ defaults_certs:
     name:
     key_size: 4096  # 1024, 2048, 4096
     key_type: 'RSA'
-    cipher: 'AES-256-CBC'  # see: 'openssl list -cipher-algorithms'
+    cipher: 'auto'
     digest: 'sha256'
     regenerate: 'partial_idempotence'
     pwd:
     domains: []
     ips: []
+    backend: 'auto'
 
     # certificate config
     cn: 'Ansible Certificate'
@@ -23,10 +24,11 @@ defaults_certs:
     country:
     state:
     locality:
+    san_other:  # other RAW values to set as subject alternative name => MUST BE VALID
     email:  # if using letsencrypt you might pass an email per domain => see letsencrypt-certs
     key_usage: 'serverAuth'  # serverAuth, clientAuth, codeSigning, emailProtection, timeStamping, ocspSigning
     ocsp_staple: false
-    crl_distribution: []
+    crl_distribution: []  # list of dicts
     #      - full_name:
     #        - "URI:https://ca.example.com/revocations.crl"
     #        crl_issuer:
@@ -54,18 +56,19 @@ defaults_certs:
     service:  # apache, nginx
     renew_timer: 'Mon *-*-* 01:00:00'
     verbosity: 'v'
-    certs: {}  # see 'default_le_certbot_cert_config'
+    certs: {}  # see 'default_le_certbot_cert' below
     renew: false  # if a renewal should be started by the role; the renewal service will auto-renew the certificates otherwise
 
   ca:
-    path: '/etc/certs/ca'
+    path:
     valid_days: 7300
     key_size: 8192  # 1024, 2048, 4096, 8192
     key_type: 'RSA'
-    cipher: 'AES-256-CBC'  # see: 'openssl list -cipher-algorithms'
+    cipher: 'auto'
     digest: 'sha512'
     regenerate: 'partial_idempotence'
     pwd:
+    backend: 'auto'
 
     # certificate config
     cn: 'CA Certificate'
@@ -83,4 +86,14 @@ default_le_certbot_cert:
   state: 'present'
   email:
 
+# letsencrypt example:
+#certs:
+#  example1:
+#    domains: ['example1.ansibleguy.net']
+#    email: 'dummy@ansibleguy.net'
+#  example2:
+#    domains: ['example2.ansibleguy.net']
+#    email: 'dummy@ansibleguy.net'
+
 debug: false
+testing: false

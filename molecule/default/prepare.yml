@@ -1,0 +1,19 @@
+---
+
+- name: Prepare
+  hosts: test-ag-certs-letsencrypt-{{ lookup('ansible.builtin.env', 'USER') }}
+  tasks:
+    - name: Installing nginx
+      ansible.builtin.apt:
+        name: 'nginx'
+
+    - name: Starting nginx
+      ansible.builtin.systemd:
+        name: 'nginx.service'
+        enabled: yes
+        state: started
+
+    - name: Checking if nginx is running
+      wait_for:
+        port: 80
+        timeout: 4
