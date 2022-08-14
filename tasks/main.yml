@@ -24,7 +24,9 @@
 - name: Certificates | Checking for invalid domains/hostnames
   ansible.builtin.pause:
     prompt: "It seems you have configured an invalid domain/hostname: '{{ item }}' - do you want to continue?"
-  when: not item | valid_hostname
+  when:
+    - not no_prompts
+    - not item | valid_hostname
   loop: "{{ CERT_CONFIG.cert.domains }}"
 
 - name: Certificates | Internal signed

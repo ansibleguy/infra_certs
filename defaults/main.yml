@@ -1,5 +1,9 @@
 ---
 
+no_prompts: false
+debug: false
+testing: false
+
 # default config => is overwritten by provided config
 defaults_certs:
   mode: 'selfsigned'  # selfsigned, ca, pki, le_certbot
@@ -94,6 +98,3 @@ default_le_certbot_cert:
 #  example2:
 #    domains: ['example2.ansibleguy.net']
 #    email: 'dummy@ansibleguy.net'
-
-debug: false
-testing: false
