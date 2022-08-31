@@ -53,6 +53,10 @@ Ansible Role to create certificates to use on a linux server.
 * **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
 
 
+* **Info:** For LetsEncrypt renewal to work, you must allow outgoing connections to:
+
+  80/tcp, 443/tcp+udp to acme-v02.api.letsencrypt.org, staging-v02.api.letsencrypt.org (_debug mode_) and r3.o.lencr.org
+
 ## Requirements
 
 * Community collection: ```ansible-galaxy install -r requirements.yml```
