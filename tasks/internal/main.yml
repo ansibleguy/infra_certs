@@ -16,6 +16,9 @@
   ansible.builtin.file:
     path: "{{ CERT_CONFIG.path }}"
     state: directory
+    mode: 0750
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
   tags: [certs, ca]
 
 - name: Certificates | Internal | Minimal CA

@@ -93,10 +93,10 @@ default_le_certbot_cert:
   email: "{{ CERT_CONFIG.letsencrypt.email }}"
 
 # letsencrypt example:
-#certs:
-#  example1:
-#    domains: ['example1.ansibleguy.net']
-#    email: 'dummy@ansibleguy.net'
-#  example2:
-#    domains: ['example2.ansibleguy.net']
-#    email: 'dummy@ansibleguy.net'
+# certs:
+#   example1:
+#     domains: ['example1.ansibleguy.net']
+#     email: 'dummy@ansibleguy.net'
+#   example2:
+#     domains: ['example2.ansibleguy.net']
+#     email: 'dummy@ansibleguy.net'

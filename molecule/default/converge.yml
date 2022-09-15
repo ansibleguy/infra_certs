@@ -95,7 +95,7 @@
           cert:
             name: 'self_minca_pwd'
             domains: ['cert.test.ansibleguy.net']
-            ips: [ '192.168.0.1' ]
+            ips: ['192.168.0.1']
             cn: 'CA-Signed Server Cert'
             pwd: 'Nope.'
             key_usage: 'serverAuth'

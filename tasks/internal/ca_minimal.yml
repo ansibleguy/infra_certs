@@ -6,6 +6,9 @@
   ansible.builtin.file:
     path: "{{ config_ca.ca.path | default(config_ca.path, true) }}"
     state: directory
+    mode: 0750
+    owner: "{{ config_ca.owner_key }}"
+    group: "{{ config_ca.group_key }}"
 
 - name: Certificates | Internal | Minimal CA | Generate ca private key (encrypted key)
   community.crypto.openssl_privatekey:
