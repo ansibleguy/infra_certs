@@ -2,7 +2,7 @@
 
 - name: Certificates | Internal | Cert | Generate private key (encrypted)
   community.crypto.openssl_privatekey:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
     cipher: "{{ config_cert.cert.cipher }}"
     size: "{{ config_cert.cert.key_size }}"
@@ -17,7 +17,7 @@
 
 - name: Certificates | Internal | Cert | Generate private key (plain)
   community.crypto.openssl_privatekey:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
     size: "{{ config_cert.cert.key_size }}"
     type: "{{ config_cert.cert.key_type }}"
@@ -55,9 +55,9 @@
 
 - name: Certificates | Internal | Cert | Generating signing-request (encrypted key)
   community.crypto.openssl_csr:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     privatekey_passphrase: "{{ config_cert.cert.pwd }}"
     digest: "{{ config_cert.cert.digest }}"
     common_name: "{{ config_cert.cert.cn }}"
@@ -79,9 +79,9 @@
 
 - name: Certificates | Internal | Cert | Generating signing-request (plain key)
   community.crypto.openssl_csr:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     digest: "{{ config_cert.cert.digest }}"
     common_name: "{{ config_cert.cert.cn }}"
     organization_name: "{{ config_cert.cert.org }}"
@@ -102,11 +102,11 @@
 
 - name: Certificates | Internal | Cert | Self-Signed | Generating certificate (encrypted key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     privatekey_passphrase: "{{ config_cert.cert.pwd }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: selfsigned
     selfsigned_not_after: "+{{ config_cert.cert.valid_days }}d"
     mode: "{{ config_cert.mode_cert }}"
@@ -119,10 +119,10 @@
 
 - name: Certificates | Internal | Cert | Self-Signed | Generating certificate (plain key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: selfsigned
     selfsigned_not_after: "+{{ config_cert.cert.valid_days }}d"
     mode: "{{ config_cert.mode_cert }}"
@@ -135,11 +135,11 @@
 
 - name: Certificates | Internal | Cert | CA-Signed | Generating certificate (encrypted key; encrypted ca-key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     privatekey_passphrase: "{{ config_cert.cert.pwd }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: ownca
     ownca_not_after: "+{{ config_cert.cert.valid_days }}d"
     ownca_path: "{{ config_cert.ca.path | default(config_cert.path, true) }}/ca.{{ config_cert.extension_cert }}"
@@ -156,10 +156,10 @@
 
 - name: Certificates | Internal | Cert | CA-Signed | Generating certificate (plain key; encrypted ca-key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: ownca
     ownca_not_after: "+{{ config_cert.cert.valid_days }}d"
     ownca_path: "{{ config_cert.ca.path | default(config_cert.path, true) }}/ca.{{ config_cert.extension_cert }}"
@@ -176,11 +176,11 @@
 
 - name: Certificates | Internal | Cert | CA-Signed | Generating certificate (encrypted key; plain ca-key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
     privatekey_passphrase: "{{ config_cert.cert.pwd }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: ownca
     ownca_not_after: "+{{ config_cert.cert.valid_days }}d"
     ownca_path: "{{ config_cert.ca.path | default(config_cert.path, true) }}/ca.{{ config_cert.extension_cert }}"
@@ -196,10 +196,10 @@
 
 - name: Certificates | Internal | Cert | CA-Signed | Generating certificate (plain key; plain ca-key)
   community.crypto.x509_certificate:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}"
     select_crypto_backend: "{{ config_cert.cert.backend }}"
-    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_key }}"
-    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_csr }}"
+    privatekey_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"
+    csr_path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_csr }}"
     provider: ownca
     ownca_not_after: "+{{ config_cert.cert.valid_days }}d"
     ownca_path: "{{ config_cert.ca.path | default(config_cert.path, true) }}/ca.{{ config_cert.extension_cert }}"
@@ -214,17 +214,17 @@
     - config_cert.mode == 'ca'
 
 - name: Certificates | Internal | Cert | CA-Signed | Creating chained certificate
-  ansible.builtin.shell: "cat {{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.{{ config_cert.extension_cert }}
+  ansible.builtin.shell: "cat {{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_cert }}
   {{ config_cert.ca.path | default(config_cert.path, true) }}/ca.{{ config_cert.extension_cert }} >
-  {{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.chain.{{ config_cert.extension_cert }}"
+  {{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.chain.{{ config_cert.extension_cert }}"
   args:
-    creates: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.chain.{{ config_cert.extension_cert }}"
+    creates: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.chain.{{ config_cert.extension_cert }}"
   when: config_cert.mode == 'ca'
   check_mode: false
 
 - name: Certificates | Internal | Cert | CA-Signed | Setting privileges on chained certificate
   ansible.builtin.file:
-    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name)  }}.chain.{{ config_cert.extension_cert }}"
+    path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.chain.{{ config_cert.extension_cert }}"
     mode: "{{ config_cert.mode_cert }}"
     owner: "{{ config_cert.owner_cert }}"
     group: "{{ config_cert.group_cert }}"

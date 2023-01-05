@@ -9,3 +9,5 @@ skip_list:
   - 'ignore-errors'
   - 'yaml'
   - '204'  # line length => checked by yamllint
+  - 'name[template]'
+  - 'args[module]'
