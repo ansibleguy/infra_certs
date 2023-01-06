@@ -9,6 +9,7 @@
     mode: 0750
     owner: "{{ config_ca.owner_key }}"
     group: "{{ config_ca.group_key }}"
+  changed_when: false
 
 - name: Certificates | Internal | Minimal CA | Generate ca private key (encrypted key)
   community.crypto.openssl_privatekey:

@@ -17,6 +17,7 @@
   loop:
     - "{{ CERT_CONFIG.path }}"
     - "{{ le_path }}"
+  changed_when: false
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Certbot command (FYI)"
   ansible.builtin.debug:
