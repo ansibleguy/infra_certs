@@ -1,6 +1,6 @@
 ---
 
-references:
+_references:
   docker:
     all: &docker_all
       docker_host: 'tcp://molecule-docker.local:2375'
@@ -19,21 +19,21 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: test-ag-certs-internal-${USER}
+  - name: test-ag-certs-internal
     docker_networks:
-      - name: 'test-ag-certs-${USER}'
+      - name: 'test-ag-certs'
         ipam_config:
           - subnet: '192.168.6.0/24'
             gateway: '192.168.6.254'
     networks:
-      - name: 'test-ag-certs-${USER}'
+      - name: 'test-ag-certs'
         ipv4_address: '192.168.6.1'
     groups: [grp_targets]
     <<: *docker_all
 
-  - name: test-ag-certs-letsencrypt-${USER}
+  - name: test-ag-certs-letsencrypt
     networks:
-      - name: 'test-ag-certs-${USER}'
+      - name: 'test-ag-certs'
         ipv4_address: '192.168.6.2'
     groups: [grp_targets]
     <<: *docker_all

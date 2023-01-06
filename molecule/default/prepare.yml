@@ -1,7 +1,7 @@
 ---
 
 - name: Prepare
-  hosts: test-ag-certs-letsencrypt-{{ lookup('ansible.builtin.env', 'USER') }}
+  hosts: test-ag-certs-letsencrypt
   tasks:
     - name: Installing nginx
       ansible.builtin.apt:

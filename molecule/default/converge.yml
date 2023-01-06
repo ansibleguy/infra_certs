@@ -3,7 +3,7 @@
 # todo: test revoking
 
 - name: Converge Internal
-  hosts: test-ag-certs-internal-{{ lookup('ansible.builtin.env', 'USER') }}
+  hosts: test-ag-certs-internal
   roles:
     - role: ansibleguy.infra_certs
       vars:
@@ -117,7 +117,7 @@
             valid_days: 5
 
 - name: Converge LetsEncrypt
-  hosts: test-ag-certs-letsencrypt-{{ lookup('ansible.builtin.env', 'USER') }}
+  hosts: test-ag-certs-letsencrypt
   vars:
     testing: true  # target letsencrypt-staging
     certs:
