@@ -19,12 +19,12 @@
     group: 'root'
     mode: 0644
   register: tmp_site_enable
-  when: enabled_nginx_sites.stdout == ''
+  when: enabled_nginx_sites.stdout_lines | length == 0
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Nginx | Reloading apache
   ansible.builtin.systemd:
     name: 'nginx.service'
     state: reloaded
   when:
-    - enabled_nginx_sites.stdout == ''
+    - enabled_nginx_sites.stdout_lines | length == 0
     - tmp_site_enable.changed

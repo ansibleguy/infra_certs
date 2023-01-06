@@ -19,12 +19,12 @@
     group: 'root'
     mode: 0644
   register: tmp_site_enable
-  when: enabled_apache_sites.stdout == ''
+  when: enabled_apache_sites.stdout_lines | length == 0
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Apache | Reloading apache
   ansible.builtin.systemd:
     name: 'apache2.service'
     state: reloaded
   when:
-    - enabled_apache_sites.stdout == ''
+    - enabled_apache_sites.stdout_lines | length == 0
     - tmp_site_enable.changed
