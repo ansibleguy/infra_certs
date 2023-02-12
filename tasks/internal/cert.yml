@@ -1,5 +1,11 @@
 ---
 
+- name: Certificates | Internal | Cert | Checking config
+  ansible.builtin.assert:
+    that:
+      - config_cert.cert.key_size in CERT_HC.options.key_size.cert
+      - config_cert.cert.email is none or config_cert.cert.email | validate_email
+
 - name: Certificates | Internal | Cert | Generate private key (encrypted)
   community.crypto.openssl_privatekey:
     path: "{{ config_cert.path }}/{{ name | default(config_cert.cert.name) }}.{{ config_cert.extension_key }}"

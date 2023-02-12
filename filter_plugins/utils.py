@@ -13,6 +13,7 @@ class FilterModule(object):
             "check_email": self.check_email,
             "le_domains_changed": self.le_domains_changed,
             "ensure_list": self.ensure_list,
+            "validate_email": self.validate_email,
         }
 
     @staticmethod
@@ -20,7 +21,7 @@ class FilterModule(object):
         return regex_replace(r'[^0-9a-zA-Z\.]+', '', key.replace(' ', '_'))
 
     @staticmethod
-    def valid_hostname(name: str) -> bool:
+    def _valid_domain(name: str) -> bool:
         # see: https://validators.readthedocs.io/en/latest/_modules/validators/domain.html
         domain = regex_compile(
             r'^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|'
@@ -28,11 +29,14 @@ class FilterModule(object):
             r'([a-zA-Z0-9][-_.a-zA-Z0-9]{0,61}[a-zA-Z0-9]))\.'
             r'([a-zA-Z]{2,13}|[a-zA-Z0-9-]{2,30}.[a-zA-Z]{2,3})$'
         )
-        valid_domain = domain.match(name) is not None
+        return domain.match(name) is not None
+
+    @classmethod
+    def valid_hostname(cls, name: str) -> bool:
         # see: https://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
         expr_hostname = r'^[a-zA-Z0-9-\.]{1,253}$'
         valid_hostname = regex_match(expr_hostname, name) is not None
-        return all([valid_domain, valid_hostname])
+        return all([cls._valid_domain(name), valid_hostname])
 
     @staticmethod
     def valid_ip(ip: str) -> bool:
@@ -51,6 +55,20 @@ class FilterModule(object):
                 return False
 
         return True
+
+    @classmethod
+    def validate_email(cls, email: str) -> bool:
+        # ToDo: further checks like https://validators.readthedocs.io/en/latest/_modules/validators/email.html#email
+        if email.find('@') == -1:
+            return False
+
+        full_len = len(email)
+        sub_len = len(email.replace('@', ''))
+
+        if full_len != (sub_len + 1):
+            return False
+
+        return cls._valid_domain(email.split('@', 1)[1])
 
     @staticmethod
     def le_domains_changed(running_config: str, cert_key: str, config_domains: list) -> bool:

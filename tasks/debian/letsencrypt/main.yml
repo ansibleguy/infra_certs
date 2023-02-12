@@ -6,7 +6,7 @@
       - CERT_CONFIG.letsencrypt.certs | length > 0
       - CERT_CONFIG.letsencrypt.service | default(false, true)
       - CERT_CONFIG.letsencrypt.email | default(false, true) or CERT_CONFIG.letsencrypt.certs | check_email
-      - "CERT_CONFIG.letsencrypt.service in ['apache', 'nginx']"
+      - CERT_CONFIG.letsencrypt.service in CERT_HC.letsencrypt.options.service
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Configure for Apache2
   ansible.builtin.import_tasks: apache.yml

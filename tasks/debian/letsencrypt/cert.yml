@@ -7,6 +7,16 @@
     - debug is defined
     - debug
 
+# ToDo: path validation
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Checking config"
+  ansible.builtin.assert:
+    that:
+      - CERT_CONFIG.letsencrypt.service in CERT_HC.letsencrypt.options.service
+      - CERT_CONFIG.letsencrypt.verbosity in CERT_HC.letsencrypt.options.verbosity
+      - le_cert.key_size in CERT_HC.options.key_size.cert
+      - le_cert.domains | length > 0
+      - le_cert.email | validate_email or CERT_CONFIG.cert.email | validate_email
+
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
   ansible.builtin.file:
     path: "{{ item }}"

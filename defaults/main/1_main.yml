@@ -63,6 +63,7 @@ defaults_certs:
     certs: {}  # see 'default_le_certbot_cert' below
     renew: false  # if a renewal should be started by the role; the renewal service will auto-renew the certificates otherwise
     email:
+    key_size:
 
   ca:
     path:
@@ -100,3 +101,4 @@ default_le_certbot_cert:
 #   example2:
 #     domains: ['example2.ansibleguy.net']
 #     email: 'dummy@ansibleguy.net'
+
