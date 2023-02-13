@@ -4,7 +4,7 @@
   ansible.builtin.assert:
     that:
       - config_cert.cert.key_size in CERT_HC.options.key_size.cert
-      - config_cert.cert.email is none or config_cert.cert.email | validate_email
+      - config_cert.cert.email | default(none, true) is none or config_cert.cert.email | validate_email
 
 - name: Certificates | Internal | Cert | Generate private key (encrypted)
   community.crypto.openssl_privatekey:
