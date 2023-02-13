@@ -101,4 +101,3 @@ default_le_certbot_cert:
 #   example2:
 #     domains: ['example2.ansibleguy.net']
 #     email: 'dummy@ansibleguy.net'
-
