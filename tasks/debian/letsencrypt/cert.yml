@@ -16,6 +16,15 @@
       - le_cert.key_size in CERT_HC.options.key_size.cert
       - le_cert.domains | length > 0
       - le_cert.email | validate_email or CERT_CONFIG.cert.email | validate_email
+  ignore_errors: true
+  register: le_cnf_check
+
+- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Invalid config"
+  ansible.builtin.fail:
+    msg: "LetsEncrypt-CONFIG: {{ CERT_CONFIG.letsencrypt }} | {{ le_cert }}"
+  when:
+    - le_cnf_check.failed is defined
+    - le_cnf_check.failed
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
   ansible.builtin.file:

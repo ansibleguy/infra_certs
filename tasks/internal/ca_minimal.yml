@@ -7,6 +7,15 @@
     that:
       - config_ca.ca.key_size in CERT_HC.options.key_size.ca
       - config_ca.ca.email | default(none, true) is none or config_ca.ca.email | validate_email
+  ignore_errors: true
+  register: ca_cnf_check
+
+- name: Certificates | Internal | Minimal CA | Invalid config
+  ansible.builtin.fail:
+    msg: "CA-CONFIG: {{ config_ca }}"
+  when:
+    - ca_cnf_check.failed is defined
+    - ca_cnf_check.failed
 
 - name: Certificates | Internal | Minimal CA | Creating ca directory
   ansible.builtin.file:

@@ -5,6 +5,15 @@
     that:
       - config_cert.cert.key_size in CERT_HC.options.key_size.cert
       - config_cert.cert.email | default(none, true) is none or config_cert.cert.email | validate_email
+  ignore_errors: true
+  register: crt_cnf_check
+
+- name: Certificates | Internal | Minimal CA | Invalid config
+  ansible.builtin.fail:
+    msg: "CERT-CONFIG: {{ config_cert }}"
+  when:
+    - crt_cnf_check.failed is defined
+    - crt_cnf_check.failed
 
 - name: Certificates | Internal | Cert | Generate private key (encrypted)
   community.crypto.openssl_privatekey:
