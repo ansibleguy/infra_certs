@@ -40,7 +40,6 @@ ansible-galaxy install -r requirements.yml
       * Supported for Nginx and Apache
       * Host needs to have a valid public dns record pointed at it
       * Needs to be publicly reachable over port 80/tcp
-    * _Use a proper **Certificate Authority** (_full PKI_) to create **signed certificates**_ => **not yet available**
 
 
   * **Default config**:
@@ -55,6 +54,9 @@ ansible-galaxy install -r requirements.yml
 * **Note:** Most of the role's functionality can be opted in or out.
 
   For all available options - see the default-config located in the main defaults-file!
+
+
+* **Note:** If you have the need to mass manage certificates - you might want to check out the [ansibleguy.infra_pki](https://github.com/ansibleguy/infra_pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
 
 
 * **Note:** The certificate file-name (_name variable as defined or else CommonName_) will be updated:
