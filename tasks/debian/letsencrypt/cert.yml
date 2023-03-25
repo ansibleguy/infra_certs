@@ -58,6 +58,7 @@
     {% for domain in le_cert.domains %}{% if domain | valid_hostname %}--domain {{ domain }} {% endif %}{% endfor %}
     {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
   when: le_changed
+  changed_when: false
 
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Adding dummy certs"
   ansible.builtin.include_tasks: test.yml

@@ -48,6 +48,7 @@
 # todo: task gets stuck
 - name: Certificates | Debian | LetsEncrypt Certbot | Revoking certificates
   ansible.builtin.command: "certbot revoke --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
+  changed_when: false
   when:
     - le_cert.state != 'present'
     - existing_certs_raw.stdout.find(le_name) != -1
@@ -60,6 +61,7 @@
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Deleting certificates
   ansible.builtin.command: "certbot delete --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
+  changed_when: false
   when:
     - le_cert.state != 'present'
     - existing_certs_raw.stdout.find(le_name) != -1
@@ -100,4 +102,5 @@
 - name: Certificates | Debian | LetsEncrypt Certbot | Running renewal
   ansible.builtin.command: "certbot renew --force-renewal{% if debug or testing %} --staging{% endif %}"
   when: CERT_CONFIG.letsencrypt.renew
+  changed_when: false
   ignore_errors: true
