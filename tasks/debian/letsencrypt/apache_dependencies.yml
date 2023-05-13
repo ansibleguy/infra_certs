@@ -1,6 +1,6 @@
 ---
 
-- name: Apache | Debian | LetsEncrypt Certbot | Dependencies | Deploying temporary apache site
+- name: Apache | LetsEncrypt Certbot | Dependencies | Deploying temporary apache site
   ansible.builtin.template:
     src: 'templates/etc/apache2/sites-available/le_dummy.conf.j2'
     dest: '/etc/apache2/sites-available/tmp_le_dummy.conf'
@@ -8,7 +8,7 @@
     group: 'root'
     mode: 0644
 
-- name: Apache | Debian | LetsEncrypt Certbot | Dependencies | Enable apache site
+- name: Apache | LetsEncrypt Certbot | Dependencies | Enable apache site
   ansible.builtin.file:
     state: link
     src: '/etc/apache2/sites-available/tmp_le_dummy.conf'
@@ -17,7 +17,7 @@
     group: 'root'
     mode: 0644
 
-- name: Apache | Debian | LetsEncrypt Certbot | Dependencies | Reload apache
+- name: Apache | LetsEncrypt Certbot | Dependencies | Reload apache
   ansible.builtin.systemd:
     name: 'apache2.service'
     state: reloaded

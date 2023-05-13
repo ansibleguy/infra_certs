@@ -6,6 +6,7 @@
       - CERT_CONFIG.cert.name or name
       - CERT_CONFIG.cert.cn
       - CERT_CONFIG.mode != 'ca' or CERT_CONFIG.ca.cn
+  tags: always
 
 - name: Certificates | Internal | Installing dependencies
   ansible.builtin.package:

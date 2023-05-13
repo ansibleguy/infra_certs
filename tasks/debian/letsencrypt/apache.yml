@@ -1,17 +1,17 @@
 ---
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Apache | Install package
+- name: Certificates | LetsEncrypt Certbot | Apache | Install package
   ansible.builtin.package:
     name: ['python3-certbot-apache']
     state: present
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Apache | Checking sites
+- name: Certificates | LetsEncrypt Certbot | Apache | Checking sites
   ansible.builtin.command: 'ls /etc/apache2/sites-enabled/'
   changed_when: false
   register: enabled_apache_sites
   check_mode: false
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Apache | Deploying temporary apache site
+- name: Certificates | LetsEncrypt Certbot | Apache | Deploying temporary apache site
   ansible.builtin.template:
     src: 'templates/etc/apache2/sites-enabled/le_dummy.conf.j2'
     dest: '/etc/apache2/sites-enabled/tmp_le_dummy.conf'
@@ -21,7 +21,7 @@
   register: tmp_site_enable
   when: enabled_apache_sites.stdout_lines | length == 0
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Apache | Reloading apache
+- name: Certificates | LetsEncrypt Certbot | Apache | Reloading apache
   ansible.builtin.systemd:
     name: 'apache2.service'
     state: reloaded

@@ -1,34 +1,35 @@
 ---
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Checking config
+- name: Certificates | LetsEncrypt Certbot | Checking config
   ansible.builtin.assert:
     that:
       - CERT_CONFIG.letsencrypt.certs | length > 0
       - CERT_CONFIG.letsencrypt.service | default(false, true)
       - CERT_CONFIG.letsencrypt.email | default(false, true) or CERT_CONFIG.letsencrypt.certs | check_email
       - CERT_CONFIG.letsencrypt.service in CERT_HC.letsencrypt.options.service
+  tags: always
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Configure for Apache2
+- name: Certificates | LetsEncrypt Certbot | Configure for Apache2
   ansible.builtin.import_tasks: apache.yml
   when: CERT_CONFIG.letsencrypt.service == 'apache'
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Configure for Nginx
+- name: Certificates | LetsEncrypt Certbot | Configure for Nginx
   ansible.builtin.import_tasks: nginx.yml
   when: CERT_CONFIG.letsencrypt.service == 'nginx'
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Pulling existing certs (this can take some time)
+- name: Certificates | LetsEncrypt Certbot | Pulling existing certs (this can take some time)
   ansible.builtin.command: "certbot certificates --config-dir {{ CERT_CONFIG.letsencrypt.path }}{% if debug or testing %} --staging{% endif %}"
   register: existing_certs_raw
   changed_when: false
   check_mode: false
   timeout: 120
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Existing certificates
+- name: Certificates | LetsEncrypt Certbot | Existing certificates
   ansible.builtin.debug:
     var: existing_certs_raw.stdout
   when: debug | bool
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Adding certificates
+- name: Certificates | LetsEncrypt Certbot | Adding certificates
   ansible.builtin.include_tasks: cert.yml
   when:
     - le_cert.domains | length > 0
@@ -44,7 +45,7 @@
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
 # todo: task gets stuck
-- name: Certificates | Debian | LetsEncrypt Certbot | Revoking certificates
+- name: Certificates | LetsEncrypt Certbot | Revoking certificates
   ansible.builtin.command: "certbot revoke --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
   changed_when: false
   when:
@@ -57,7 +58,7 @@
     loop_var: cert_item
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Deleting certificates
+- name: Certificates | LetsEncrypt Certbot | Deleting certificates
   ansible.builtin.command: "certbot delete --cert-name {{ le_name }}{% if debug or testing %} --staging{% endif %}"
   changed_when: false
   when:
@@ -70,15 +71,15 @@
     loop_var: cert_item
   with_dict: "{{ CERT_CONFIG.letsencrypt.certs }}"
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Cleanup for Apache2
+- name: Certificates | LetsEncrypt Certbot | Cleanup for Apache2
   ansible.builtin.import_tasks: apache_cleanup.yml
   when: CERT_CONFIG.letsencrypt.service == 'apache'
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Cleanup for Nginx
+- name: Certificates | LetsEncrypt Certbot | Cleanup for Nginx
   ansible.builtin.import_tasks: nginx_cleanup.yml
   when: CERT_CONFIG.letsencrypt.service == 'nginx'
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Adding service for certbot renewal
+- name: Certificates | LetsEncrypt Certbot | Adding service for certbot renewal
   ansible.builtin.template:
     src: "templates/etc/systemd/system/{{ item }}.j2"
     dest: "/etc/systemd/system/{{ item }}"
@@ -89,7 +90,7 @@
     - 'ansibleguy.infra_certs.LetsEncryptCertbot.service'
     - 'ansibleguy.infra_certs.LetsEncryptCertbot.timer'
 
-- name: Certificates | Debian | LetsEncrypt Certbot | Enabling cert-renewal timer
+- name: Certificates | LetsEncrypt Certbot | Enabling cert-renewal timer
   ansible.builtin.systemd:
     daemon_reload: yes
     name: 'ansibleguy.infra_certs.LetsEncryptCertbot.timer'
@@ -97,7 +98,7 @@
     state: started
 
 # Renew all previously obtained certificates that are near expiry
-- name: Certificates | Debian | LetsEncrypt Certbot | Running renewal
+- name: Certificates | LetsEncrypt Certbot | Running renewal
   ansible.builtin.command: "certbot renew --force-renewal{% if debug or testing %} --staging{% endif %}"
   when: CERT_CONFIG.letsencrypt.renew
   changed_when: false

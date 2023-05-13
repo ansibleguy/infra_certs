@@ -1,12 +1,12 @@
 ---
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Showing debug info"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Showing debug info"
   ansible.builtin.debug:
     var: le_cert
   when: debug | bool
 
 # ToDo: path validation
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Checking config"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Checking config"
   ansible.builtin.assert:
     that:
       - CERT_CONFIG.letsencrypt.service in CERT_HC.letsencrypt.options.service
@@ -16,15 +16,16 @@
       - le_cert.email | validate_email or CERT_CONFIG.cert.email | validate_email
   ignore_errors: true
   register: le_cnf_check
+  tags: always
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Invalid config"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Invalid config"
   ansible.builtin.fail:
     msg: "LetsEncrypt-CONFIG: {{ CERT_CONFIG.letsencrypt }} | {{ le_cert }}"
   when:
     - le_cnf_check.failed is defined
     - le_cnf_check.failed
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Creating directory"
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -36,7 +37,7 @@
     - "{{ le_path }}"
   changed_when: false
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Certbot command (FYI)"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Certbot command (FYI)"
   ansible.builtin.debug:
     msg: "certbot certonly --non-interactive --agree-tos --no-redirect{% if debug or testing %} --staging{% endif %}
     --{{ CERT_CONFIG.letsencrypt.service }} --cert-name {{ le_name }}
@@ -47,7 +48,7 @@
     {% if le_cert.email is not none %}--email {{ le_cert.email }} {% else %}--email {{ CERT_CONFIG.cert.email }} {% endif %}"
   when: le_changed
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Running certbot"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Running certbot"
   ansible.builtin.command: "certbot certonly --non-interactive --agree-tos --no-redirect{% if debug or testing %} --staging{% endif %}
     --{{ CERT_CONFIG.letsencrypt.service }} --cert-name {{ le_name }}
     -{{ CERT_CONFIG.letsencrypt.verbosity }}
@@ -58,11 +59,11 @@
   when: le_changed
   changed_when: false
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Adding dummy certs"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Adding dummy certs"
   ansible.builtin.include_tasks: test.yml
   when: testing
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Linking cert"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Linking cert"
   ansible.builtin.file:
     state: link
     src: "{{ item.src }}"
@@ -77,7 +78,7 @@
     - {'dst': "{{ CERT_CONFIG.path }}/{{ le_name }}.chain.{{ CERT_CONFIG.extension_cert }}", 'src': "{{ le_path }}/chain.pem"}
     - {'dst': "{{ CERT_CONFIG.path }}/{{ le_name }}.fullchain.{{ CERT_CONFIG.extension_cert }}", 'src': "{{ le_path }}/fullchain.pem"}
 
-- name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Linking key"
+- name: "Certificates | LetsEncrypt Certbot | {{ le_name }} | Linking key"
   ansible.builtin.file:
     state: link
     src: "{{ le_path }}/privkey.pem"

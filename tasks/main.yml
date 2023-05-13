@@ -6,6 +6,7 @@
   ansible.builtin.assert:
     that:
       - certs is defined
+  tags: always
 
 - name: Certificates | Showing debug info - user provided config
   ansible.builtin.debug:
@@ -33,7 +34,7 @@
   ansible.builtin.include_tasks: debian/pki.yml
   when: CERT_CONFIG.mode == 'pki'
 
-- name: Certificates | Debian | Letsencrypt
+- name: Certificates | Letsencrypt
   ansible.builtin.include_tasks: debian/letsencrypt/main.yml
   when:
     - CERT_CONFIG.mode == 'le_certbot'

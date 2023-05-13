@@ -7,6 +7,7 @@
       - config_cert.cert.email | default(none, true) is none or config_cert.cert.email | validate_email
   ignore_errors: true
   register: crt_cnf_check
+  tags: always
 
 - name: Certificates | Internal | Minimal CA | Invalid config
   ansible.builtin.fail:

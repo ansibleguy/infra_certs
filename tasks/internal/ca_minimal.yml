@@ -9,6 +9,7 @@
       - config_ca.ca.email | default(none, true) is none or config_ca.ca.email | validate_email
   ignore_errors: true
   register: ca_cnf_check
+  tags: always
 
 - name: Certificates | Internal | Minimal CA | Invalid config
   ansible.builtin.fail:
