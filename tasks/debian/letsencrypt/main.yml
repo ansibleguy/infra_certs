@@ -26,9 +26,7 @@
 - name: Certificates | Debian | LetsEncrypt Certbot | Existing certificates
   ansible.builtin.debug:
     var: existing_certs_raw.stdout
-  when:
-    - debug is defined
-    - debug
+  when: debug | bool
 
 - name: Certificates | Debian | LetsEncrypt Certbot | Adding certificates
   ansible.builtin.include_tasks: cert.yml

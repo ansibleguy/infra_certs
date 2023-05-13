@@ -10,16 +10,12 @@
 - name: Certificates | Showing debug info - user provided config
   ansible.builtin.debug:
     var: certs
-  when:
-    - debug is defined
-    - debug
+  when: debug | bool
 
 - name: Certificates | Showing debug info - running config
   ansible.builtin.debug:
     var: CERT_CONFIG
-  when:
-    - debug is defined
-    - debug
+  when: debug | bool
 
 - name: Certificates | Checking for invalid domains/hostnames
   ansible.builtin.pause:

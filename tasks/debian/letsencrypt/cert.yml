@@ -3,9 +3,7 @@
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Showing debug info"
   ansible.builtin.debug:
     var: le_cert
-  when:
-    - debug is defined
-    - debug
+  when: debug | bool
 
 # ToDo: path validation
 - name: "Certificates | Debian | LetsEncrypt Certbot | {{ le_name }} | Checking config"
