@@ -1,0 +1,9 @@
+---
+
+CERT_CONFIG: "{{ defaults_certs | combine(certs, recursive=true) }}"
+
+default_le_certbot_cert:
+  domains: []
+  key_size: "{{ CERT_CONFIG.letsencrypt.key_size | default(CERT_CONFIG.cert.key_size, true) }}"
+  state: "{{ CERT_CONFIG.letsencrypt.state | default('present', true) }}"
+  email: "{{ CERT_CONFIG.letsencrypt.email }}"
