@@ -2,7 +2,8 @@
 
 # ansible-playbook -K -D -i inventory/hosts.yml playbook.yml --ask-vault-pass
 
-- hosts: localhost   # should be limited
+- name: Certificate Generator
+  hosts: localhost   # should be limited
   become: true
   gather_facts: yes
   roles:
