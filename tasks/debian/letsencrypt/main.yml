@@ -20,13 +20,19 @@
 - name: Certificates | LetsEncrypt Certbot | Pulling existing certs (this can take some time)
   ansible.builtin.command: "certbot certificates --config-dir {{ CERT_CONFIG.letsencrypt.path }}{% if debug or testing %} --staging{% endif %}"
   register: existing_certs_raw
+  when: le_existing_certs is undefined
   changed_when: false
   check_mode: false
-  timeout: 120
+  timeout: 300
+
+- name: Certificates | LetsEncrypt Certbot | Setting existing certs
+  ansible.builtin.set_fact:
+    le_existing_certs: "{{ existing_certs_raw.stdout }}"
+  when: le_existing_certs is undefined
 
 - name: Certificates | LetsEncrypt Certbot | Existing certificates
   ansible.builtin.debug:
-    var: existing_certs_raw.stdout
+    var: le_existing_certs
   when: debug | bool
 
 - name: Certificates | LetsEncrypt Certbot | Adding certificates
@@ -38,7 +44,7 @@
     le_cert: "{{ default_le_certbot_cert | combine(cert_item.value, recursive=true) }}"
     le_name: "{{ cert_item.key | safe_key }}"
     le_path: "{{ CERT_CONFIG.letsencrypt.path }}/live/{{ le_name }}"
-    le_changed: "{{ existing_certs_raw.stdout | le_domains_changed(le_name, le_cert.domains) }}"
+    le_changed: "{{ le_existing_certs | le_domains_changed(le_name, le_cert.domains) }}"
   loop_control:
     loop_var: cert_item
   no_log: true
@@ -50,7 +56,7 @@
   changed_when: false
   when:
     - le_cert.state != 'present'
-    - existing_certs_raw.stdout.find(le_name) != -1
+    - le_existing_certs.find(le_name) != -1
   vars:
     le_cert: "{{ default_le_certbot_cert | combine(cert_item.value, recursive=true) }}"
     le_name: "{{ cert_item.key | safe_key }}"
@@ -63,7 +69,7 @@
   changed_when: false
   when:
     - le_cert.state != 'present'
-    - existing_certs_raw.stdout.find(le_name) != -1
+    - le_existing_certs.find(le_name) != -1
   vars:
     le_cert: "{{ default_le_certbot_cert | combine(cert_item.value, recursive=true) }}"
     le_name: "{{ cert_item.key | safe_key }}"
