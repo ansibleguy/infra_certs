@@ -15,6 +15,10 @@ Ansible Role to create certificates to use on a linux server.
 ## Install
 
 ```bash
+# latest
+ansible-galaxy role install git+https://github.com/ansibleguy/infra_certs
+
+# from galaxy
 ansible-galaxy install ansibleguy.infra_certs
 
 # or to custom role-path
