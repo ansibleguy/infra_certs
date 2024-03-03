@@ -24,6 +24,7 @@
   when:
     - not no_prompts
     - not item | valid_hostname
+    - not item | valid_ip
   loop: "{{ CERT_CONFIG.cert.domains }}"
 
 - name: Certificates | Internal signed
