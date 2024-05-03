@@ -60,7 +60,7 @@ ansible-galaxy install -r requirements.yml
 
 * **Note:** Most of the role's functionality can be opted in or out.
 
-  For all available options - see the default-config located in the main defaults-file!
+  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/infra_certs/blob/latest/defaults/main/1_main.yml)!
 
 
 * **Note:** If you have the need to **mass manage certificates** - you might want to check out the [ansibleguy.infra_pki](https://github.com/ansibleguy/infra_pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
