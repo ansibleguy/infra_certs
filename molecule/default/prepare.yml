@@ -2,10 +2,12 @@
 
 - name: Prepare
   hosts: test-ag-certs-letsencrypt
+  gather_facts: no
   tasks:
     - name: Installing nginx
       ansible.builtin.apt:
         name: 'nginx'
+        update_cache: true
 
     - name: Starting nginx
       ansible.builtin.systemd:
