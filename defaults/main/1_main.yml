@@ -6,7 +6,7 @@ testing: false
 
 # default config => is overwritten by provided config
 defaults_certs:
-  mode: 'selfsigned'  # selfsigned, ca, pki, le_certbot
+  mode: 'selfsigned'  # selfsigned, snakeoil/quick, ca, pki, le_certbot
   path: '/etc/ssl/ansible'
 
   cert:

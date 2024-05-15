@@ -1,0 +1,51 @@
+---
+
+- name: Certificates | Snakeoil | Creating cert directory
+  ansible.builtin.file:
+    path: "{{ CERT_CONFIG.path }}"
+    state: directory
+    mode: 0750
+    owner: "{{ CERT_CONFIG.owner_key }}"
+    group: "{{ CERT_CONFIG.group_key }}"
+
+- name: Certificates | Snakeoil | Setting SAN
+  ansible.builtin.set_fact:
+    cert_san: "{% for domain in CERT_CONFIG.cert.domains %}
+    {% if domain | valid_hostname %}DNS:{{ domain }}{% if not loop.last %},{% endif %}{% endif %}
+    {% endfor %}
+    {% for ip in CERT_CONFIG.cert.ips %}
+    {% if ip | valid_ip %},IP:{{ ip }}{% endif %}
+    {% endfor %}
+    {% if CERT_CONFIG.cert.san_other %}
+    {%   if CERT_CONFIG.cert.domains | length > 0 or CERT_CONFIG.cert.ips | length > 0 %},{% endif %}
+    {{ CERT_CONFIG.cert.san_other }}
+    {% endif %}"
+  when: >
+    CERT_CONFIG.cert.domains | length > 0 or
+    CERT_CONFIG.cert.ips | length > 0 or
+    CERT_CONFIG.cert.san_other
+
+- name: Certfificates | Snakeoil | Build command
+  ansible.builtin.set_fact:
+    cert_cmd: "openssl req -x509 -newkey rsa:{{ CERT_CONFIG.cert.key_size }} -sha256 -nodes \
+      {% if CERT_CONFIG.cert.cn | default(none, true) is not none %}
+      -subj \"/CN={{ CERT_CONFIG.cert.cn }}\" \
+      {% endif %}
+      {% if cert_san | default(none, true) is not none %}
+      -addext \"subjectAltName = {{ cert_san | replace(' ', '') }}\" \
+      {% endif %}
+      -keyout {{ cert_key }} -out {{ cert_pub }} \
+      -days {{ CERT_CONFIG.cert.valid_days }}"
+    cert_pub: "{{ cert_pub }}"
+  vars:
+    cert_pub: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_cert }}"
+    cert_key: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_key }}"
+
+- name: Certificates | Snakeoil | Certificate command
+  ansible.builtin.debug:
+    var: cert_cmd
+
+- name: Certificates | Snakeoil | Create Certificate
+  ansible.builtin.command: "{{ cert_cmd }}"
+  args:
+    creates: "{{ cert_pub }}"

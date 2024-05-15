@@ -40,3 +40,7 @@
   when:
     - CERT_CONFIG.mode == 'le_certbot'
     - "ansible_distribution|lower in ['debian', 'ubuntu']"
+
+- name: Certificates | Snakeoil
+  ansible.builtin.include_tasks: snakeoil.yml
+  when: "CERT_CONFIG.mode in ['snakeoil', 'quick']"
