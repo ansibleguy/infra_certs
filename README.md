@@ -32,53 +32,7 @@ ansible-galaxy install ansibleguy.infra_certs --roles-path ./roles
 ansible-galaxy install -r requirements.yml
 ```
 
-## Functionality
-
-* **Package installation**
-  * Ansible dependencies (_minimal_)
-  * Crypto Dependencies
-
-
-* **Configuration**
-  * **Four Possible Modes**:
-    * Generate **Self-Signed** certificate
-    * Use a **minimal Certificate Authority** to create signed certificates
-    * Configure **LetsEncrypt-Certbot** to generate publicly valid certificates
-      * Supported for Nginx and Apache
-      * Host needs to have a valid public dns record pointed at it
-      * Needs to be publicly reachable over port 80/tcp
-
-
-  * **Default config**:
-    * Mode => Self-Signed
-
-
-## Info
-
-* **Note:** this role currently only supports debian-based systems
-
-
-* **Note:** Most of the role's functionality can be opted in or out.
-
-  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/infra_certs/blob/latest/defaults/main/1_main.yml)!
-
-
-* **Note:** If you have the need to **mass manage certificates** - you might want to check out the [ansibleguy.infra_pki](https://github.com/ansibleguy/infra_pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
-
-
-* **Note:** The certificate file-name (_name variable as defined or else CommonName_) will be updated:
-  * spaces are transformed into underlines
-  * all Characters except "0-9a-zA-Z." are removed
-  * the file-extension (_crt/chain.crt/key/csr_) will be appended
-
-
-* **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
-
-
-* **Info:** For LetsEncrypt renewal to work, you must allow outgoing connections to:
-
-  80/tcp, 443/tcp+udp to acme-v02.api.letsencrypt.org, staging-v02.api.letsencrypt.org (_debug mode_) and r3.o.lencr.org
-
+----
 
 ## Usage
 
@@ -177,3 +131,53 @@ To debug errors - you can set the 'debug' variable at runtime:
 ```bash
 ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
 ```
+
+----
+
+## Functionality
+
+* **Package installation**
+  * Ansible dependencies (_minimal_)
+  * Crypto Dependencies
+
+
+* **Configuration**
+  * **Four Possible Modes**:
+    * Generate **Self-Signed** certificate
+    * Use a **minimal Certificate Authority** to create signed certificates
+    * Configure **LetsEncrypt-Certbot** to generate publicly valid certificates
+      * Supported for Nginx and Apache
+      * Host needs to have a valid public dns record pointed at it
+      * Needs to be publicly reachable over port 80/tcp
+
+
+  * **Default config**:
+    * Mode => Self-Signed
+
+----
+
+## Info
+
+* **Note:** this role currently only supports debian-based systems
+
+
+* **Note:** Most of the role's functionality can be opted in or out.
+
+  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/infra_certs/blob/latest/defaults/main/1_main.yml)!
+
+
+* **Note:** If you have the need to **mass manage certificates** - you might want to check out the [ansibleguy.infra_pki](https://github.com/ansibleguy/infra_pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
+
+
+* **Note:** The certificate file-name (_name variable as defined or else CommonName_) will be updated:
+  * spaces are transformed into underlines
+  * all Characters except "0-9a-zA-Z." are removed
+  * the file-extension (_crt/chain.crt/key/csr_) will be appended
+
+
+* **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
+
+
+* **Info:** For LetsEncrypt renewal to work, you must allow outgoing connections to:
+
+  80/tcp, 443/tcp+udp to acme-v02.api.letsencrypt.org, staging-v02.api.letsencrypt.org (_debug mode_) and r3.o.lencr.org
