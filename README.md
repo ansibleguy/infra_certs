@@ -67,7 +67,7 @@ Example for Self-Signed config:
 
 ```yaml
 certs:
-  mode: 'selfsigned'
+  mode: 'selfsigned'  # or 'snakeoil' (if faster)
   # choose 'ca' instead if you use dns-names
   #   some browsers won't let you connect when using self-signed ones
   path: '/etc/nginx/ssl'
