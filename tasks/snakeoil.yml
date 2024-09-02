@@ -34,12 +34,12 @@
       {% if cert_san | default(none, true) is not none %}
       -addext \"subjectAltName = {{ cert_san | replace(' ', '') }}\" \
       {% endif %}
-      -keyout {{ cert_key }} -out {{ cert_pub }} \
+      -keyout {{ _cert_key }} -out {{ _cert_pub }} \
       -days {{ CERT_CONFIG.cert.valid_days }}"
-    cert_pub: "{{ cert_pub }}"
+    cert_pub: "{{ _cert_pub }}"
   vars:
-    cert_pub: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_cert }}"
-    cert_key: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_key }}"
+    _cert_pub: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_cert }}"
+    _cert_key: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_key }}"
 
 - name: Certificates | Snakeoil | Certificate command
   ansible.builtin.debug:
