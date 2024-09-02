@@ -25,7 +25,7 @@
     CERT_CONFIG.cert.ips | length > 0 or
     CERT_CONFIG.cert.san_other
 
-- name: Certfificates | Snakeoil | Build command
+- name: Certificates | Snakeoil | Build command
   ansible.builtin.set_fact:
     cert_cmd: "openssl req -x509 -newkey rsa:{{ CERT_CONFIG.cert.key_size }} -sha256 -nodes \
       {% if CERT_CONFIG.cert.cn | default(none, true) is not none %}
