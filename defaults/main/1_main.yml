@@ -62,6 +62,7 @@ defaults_certs:
     verbosity: 'v'
     certs: {}  # see 'default_le_certbot_cert' below
     renew: false  # if a renewal should be started by the role; the renewal service will auto-renew the certificates otherwise
+    hook:
     email:
     key_size:
 
