@@ -25,27 +25,57 @@
     CERT_CONFIG.cert.ips | length > 0 or
     CERT_CONFIG.cert.san_other
 
-- name: Certificates | Snakeoil | Build command
+- name: Certificates | Snakeoil | Build command 1/2
   ansible.builtin.set_fact:
-    cert_cmd: "openssl req -x509 -newkey rsa:{{ CERT_CONFIG.cert.key_size }} -sha256 -nodes \
-      {% if CERT_CONFIG.cert.cn | default(none, true) is not none %}
-      -subj \"/CN={{ CERT_CONFIG.cert.cn }}\" \
-      {% endif %}
-      {% if cert_san | default(none, true) is not none %}
-      -addext \"subjectAltName = {{ cert_san | replace(' ', '') }}\" \
-      {% endif %}
-      -keyout {{ _cert_key }} -out {{ _cert_pub }} \
-      -days {{ CERT_CONFIG.cert.valid_days }}"
-    cert_pub: "{{ _cert_pub }}"
-  vars:
-    _cert_pub: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_cert }}"
-    _cert_key: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_key }}"
+    cert_pub: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_cert }}"
+    cert_key: "{{ CERT_CONFIG.path }}/{{ name | default(CERT_CONFIG.cert.name) }}.{{ CERT_CONFIG.extension_key }}"
+    cert_attrs: "-days {{ CERT_CONFIG.cert.valid_days }} \
+    {% if CERT_CONFIG.cert.cn | default(none, true) is not none %}\
+    -subj \"/CN={{ CERT_CONFIG.cert.cn }}\"
+    {% endif %}\
+    {% if cert_san | default(none, true) is not none %}
+    -addext \"subjectAltName = {{ cert_san | replace(' ', '') }}\" \
+    {% endif %}"
 
-- name: Certificates | Snakeoil | Certificate command
+- name: Certificates | Snakeoil | Build command 2/2 (RSA)
+  ansible.builtin.set_fact:
+    cert_cmd_rsa: "openssl req -x509 -newkey rsa:{{ CERT_CONFIG.cert.key_size }} -sha256 -nodes {{ cert_attrs }} \
+    -keyout {{ cert_key }} -out {{ cert_pub }}"
+  when: CERT_CONFIG.cert.key_type == 'RSA'
+
+- name: Certificates | Snakeoil | Build command 2/2 (ECC)
+  ansible.builtin.set_fact:
+    cert_cmd_ecc1: "openssl ecparam -out {{ cert_key }} -name {{ CERT_CONFIG.cert.curve }} -genkey"
+    cert_cmd_ecc2: "openssl req -new -x509 -nodes -key {{ cert_key }} -out {{ cert_pub }} {{ cert_attrs }}"
+  when: CERT_CONFIG.cert.key_type == 'ECC'
+
+- name: Certificates | Snakeoil | Certificate command (RSA)
   ansible.builtin.debug:
-    var: cert_cmd
+    var: cert_cmd_rsa
+  when: CERT_CONFIG.cert.key_type == 'RSA'
 
-- name: Certificates | Snakeoil | Create Certificate
-  ansible.builtin.command: "{{ cert_cmd }}"
+- name: Certificates | Snakeoil | Certificate commands (ECC)
+  ansible.builtin.debug:
+    var: "{{ item }}"
+  loop:
+    - cert_cmd_ecc1
+    - cert_cmd_ecc2
+  when: CERT_CONFIG.cert.key_type == 'ECC'
+
+- name: Certificates | Snakeoil | Create Certificate (RSA)
+  ansible.builtin.command: "{{ cert_cmd_rsa }}"
   args:
     creates: "{{ cert_pub }}"
+  when: CERT_CONFIG.cert.key_type == 'RSA'
+
+- name: Certificates | Snakeoil | Create Key (ECC)
+  ansible.builtin.command: "{{ cert_cmd_ecc1 }}"
+  args:
+    creates: "{{ cert_key }}"
+  when: CERT_CONFIG.cert.key_type == 'ECC'
+
+- name: Certificates | Snakeoil | Create Certificate (ECC)
+  ansible.builtin.command: "{{ cert_cmd_ecc2 }}"
+  args:
+    creates: "{{ cert_pub }}"
+  when: CERT_CONFIG.cert.key_type == 'ECC'
