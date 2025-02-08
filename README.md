@@ -2,7 +2,7 @@
 
 Ansible Role to create certificates to use on a linux server.
 
-[![Lint](https://github.com/ansibleguy/infra_certs/actions/workflows/autolint.yml/badge.svg)](https://github.com/ansibleguy/infra_certs/actions/workflows/autolint.yml)
+[![Lint](https://github.com/ansibleguy/infra_certs/actions/workflows/lint.yml/badge.svg)](https://github.com/ansibleguy/infra_certs/actions/workflows/lint.yml)
 [![Ansible Galaxy](https://badges.ansibleguy.net/galaxy.badge.svg)](https://galaxy.ansible.com/ui/standalone/roles/ansibleguy/infra_certs)
 
 **Molecule Integration-Tests**:
