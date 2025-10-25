@@ -5,7 +5,7 @@
 - name: Converge Internal
   hosts: test-ag-certs-internal
   roles:
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'selfsigned'
@@ -13,11 +13,11 @@
 
           cert:
             name: 'self_srv'
-            domains: ['cert.test.ansibleguy.net']
+            domains: ['cert.test.oxl.at']
             ips: ['192.168.0.1']
             cn: 'SelfSigned Server Cert'
             org: 'AnsibleGuy Test'
-            email: 'testmaster@ansibleguy.net'
+            email: 'testmaster@oxl.at'
             ou: 'Test'
             country: 'AT'
             state: 'Styria'
@@ -25,11 +25,11 @@
             valid_days: 5
             key_usage: 'serverAuth'
             crl_distribution:
-              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
-              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              crl_issuer: 'URI:https://ca.template.oxl.at/'
+              full_name: 'URI:https://ca.template.oxl.at/revocations.crl'
               reasons: ['key_compromise', 'ca_compromise']
 
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'selfsigned'
@@ -40,7 +40,7 @@
             cn: 'SelfSigned Client Cert'
             key_usage: 'clientAuth'
 
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'selfsigned'
@@ -48,10 +48,10 @@
 
           cert:
             name: 'self_other'
-            san_other: 'DNS:cert.templates.ansibleguy.net,email:other@cert.template.ansibleguy.net'
+            san_other: 'DNS:cert.templates.oxl.at,email:other@cert.template.oxl.at'
             cn: 'SelfSigned Other Cert'
 
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'ca'
@@ -59,11 +59,11 @@
 
           cert:
             name: 'self_minca_srv'
-            domains: ['cert.test.ansibleguy.net']
+            domains: ['cert.test.oxl.at']
             ips: ['192.168.0.1']
             cn: 'CA-Signed Server Cert'
             org: 'AnsibleGuy Test'
-            email: 'testmaster@ansibleguy.net'
+            email: 'testmaster@oxl.at'
             ou: 'Test'
             country: 'AT'
             state: 'Styria'
@@ -71,11 +71,11 @@
             valid_days: 5
             key_usage: 'serverAuth'
             crl_distribution:
-              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
-              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              crl_issuer: 'URI:https://ca.template.oxl.at/'
+              full_name: 'URI:https://ca.template.oxl.at/revocations.crl'
               reasons: ['key_compromise', 'ca_compromise']
 
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'ca'
@@ -86,7 +86,7 @@
             cn: 'CA-Signed Client Cert'
             key_usage: 'clientAuth'
 
-    - role: ansibleguy.infra_certs
+    - role: oxlorg.certs
       vars:
         certs:
           mode: 'ca'
@@ -94,14 +94,14 @@
 
           cert:
             name: 'self_minca_pwd'
-            domains: ['cert.test.ansibleguy.net']
+            domains: ['cert.test.oxl.at']
             ips: ['192.168.0.1']
             cn: 'CA-Signed Server Cert'
             pwd: 'Nope.'
             key_usage: 'serverAuth'
             crl_distribution:
-              crl_issuer: 'URI:https://ca.template.ansibleguy.net/'
-              full_name: 'URI:https://ca.template.ansibleguy.net/revocations.crl'
+              crl_issuer: 'URI:https://ca.template.oxl.at/'
+              full_name: 'URI:https://ca.template.oxl.at/revocations.crl'
               reasons: ['key_compromise', 'ca_compromise']
 
           ca:
@@ -109,7 +109,7 @@
             pwd: 'YouWantMyTreasure?YouCanHaveIt!SearchForIt-SomewhereOutThere-Hidden-IsTheBiggestTreasureOfTheWorld.'
             cn: 'SelfSigned CA Cert'
             org: 'AnsibleGuy Test'
-            email: 'testmaster@ansibleguy.net'
+            email: 'testmaster@oxl.at'
             ou: 'Test'
             country: 'AT'
             state: 'Styria'
@@ -125,12 +125,12 @@
       letsencrypt:
         certs:
           test:
-            domains: ['infra-certs.test.ansibleguy.net']
-            email: 'testmaster@ansibleguy.net'
+            domains: ['infra-certs.test.oxl.at']
+            email: 'testmaster@oxl.at'
 
         path: '/etc/ssl/le_test'
         renew_timer: 'Mon *-*-* 03:00:00'
         service: 'nginx'
 
   roles:
-    - ansibleguy.infra_certs
+    - oxlorg.certs

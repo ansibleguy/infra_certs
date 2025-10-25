@@ -2,16 +2,16 @@
 
 Ansible Role to create certificates to use on a linux server.
 
-[![Lint](https://github.com/ansibleguy/infra_certs/actions/workflows/lint.yml/badge.svg)](https://github.com/ansibleguy/infra_certs/actions/workflows/lint.yml)
-[![Ansible Galaxy](https://badges.ansibleguy.net/galaxy.badge.svg)](https://galaxy.ansible.com/ui/standalone/roles/ansibleguy/infra_certs)
+[![Lint](https://github.com/O-X-L/ansible-role-certs/actions/workflows/lint.yml/badge.svg)](https://github.com/O-X-L/ansible-role-certs/actions/workflows/lint.yml)
+[![Ansible Galaxy](https://badges.oss.oxl.app/galaxy.badge.svg)](https://galaxy.ansible.com/ui/standalone/roles/oxlorg/certs)
 
 **Molecule Integration-Tests**:
 
-* Status: [![Molecule Test Status](https://badges.ansibleguy.net/infra_certs.molecule.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2) |
-[![Functional-Tests](https://github.com/ansibleguy/infra_certs/actions/workflows/integration_test_result.yml/badge.svg)](https://github.com/ansibleguy/infra_certs/actions/workflows/integration_test_result.yml)
-* Logs: [API](https://ci.ansibleguy.net/api/job/ansible-test-molecule-infra_certs/logs?token=2b7bba30-9a37-4b57-be8a-99e23016ce70&lines=1000) | [Short](https://badges.ansibleguy.net/log/molecule_infra_certs_test_short.log) | [Full](https://badges.ansibleguy.net/log/molecule_infra_certs_test.log)
+* Status: [![Molecule Test Status](https://badges.oss.oxl.app/infra_certs.molecule.svg)](https://github.com/O-X-L/ansible-role-oxl-cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2) |
+[![Functional-Tests](https://github.com/O-X-L/ansible-role-certs/actions/workflows/integration_test_result.yml/badge.svg)](https://github.com/O-X-L/ansible-role-certs/actions/workflows/integration_test_result.yml)
+* Logs: [API](https://ci.oss.oxl.app/api/job/ansible-test-molecule-infra_certs/logs?token=2b7bba30-9a37-4b57-be8a-99e23016ce70&lines=1000) | [Short](https://badges.oss.oxl.app/log/molecule_infra_certs_test_short.log) | [Full](https://badges.oss.oxl.app/log/molecule_infra_certs_test.log)
 
-Internal CI: [Tester Role](https://github.com/ansibleguy/_meta_cicd) | [Jobs API](https://github.com/O-X-L/github-self-hosted-jobs-systemd)
+Internal CI: [Tester Role](https://github.com/O-X-L/ansible-role-oxl-cicd) | [Jobs API](https://github.com/O-X-L/github-self-hosted-jobs-systemd)
 
 
 **Tested:**
@@ -24,13 +24,13 @@ Internal CI: [Tester Role](https://github.com/ansibleguy/_meta_cicd) | [Jobs API
 
 ```bash
 # latest
-ansible-galaxy role install git+https://github.com/ansibleguy/infra_certs
+ansible-galaxy role install git+https://github.com/O-X-L/ansible-role-certs
 
 # from galaxy
-ansible-galaxy install ansibleguy.infra_certs
+ansible-galaxy install oxlorg.certs
 
 # or to custom role-path
-ansible-galaxy install ansibleguy.infra_certs --roles-path ./roles
+ansible-galaxy install oxlorg.certs --roles-path ./roles
 
 # install dependencies
 ansible-galaxy install -r requirements.yml
@@ -60,8 +60,8 @@ certs:
   letsencrypt:
     certs:
       myNiceSite:
-        domains: ['myRandomSite.net', 'ansibleguy.net']
-        email: 'certs@template.ansibleguy.net'
+        domains: ['myRandomSite.net', 'oxl.at']
+        email: 'certs@template.oxl.at'
     service: 'apache'
 ```
 
@@ -79,8 +79,8 @@ certs:
     cn: 'My great certificate!'
     org: 'AnsibleGuy'
     country: 'AT'
-    email: 'certs@template.ansibleguy.net'
-    domains: ['mySoGreat.site', 'ansibleguy.net']
+    email: 'certs@template.oxl.at'
+    domains: ['mySoGreat.site', 'oxl.at']
     ips: ['192.168.44.2']
     pwd: !vault ...
 ```
@@ -97,14 +97,14 @@ certs:
     cn: 'My great certificate!'
     org: 'AnsibleGuy'
     country: 'AT'
-    email: 'certs@template.ansibleguy.net'
-    domains: ['mySoGreat.site', 'ansibleguy.net']
+    email: 'certs@template.oxl.at'
+    domains: ['mySoGreat.site', 'oxl.at']
   ca:
     path: '/etc/ca'
     cn: 'SUPER CertificateAuthority'
     org: 'AnsibleGuy'
     country: 'AT'
-    email: 'certs@template.ansibleguy.net'
+    email: 'certs@template.oxl.at'
     pwd: !vault ...
 ```
 
@@ -165,10 +165,10 @@ ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
 
 * **Note:** Most of the role's functionality can be opted in or out.
 
-  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/infra_certs/blob/latest/defaults/main/1_main.yml)!
+  For all available options - see the default-config located in [the main defaults-file](https://github.com/O-X-L/ansible-role-certs/blob/latest/defaults/main/1_main.yml)!
 
 
-* **Note:** If you have the need to **mass manage certificates** - you might want to check out the [ansibleguy.infra_pki](https://github.com/ansibleguy/infra_pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
+* **Note:** If you have the need to **mass manage certificates** - you might want to check out the [oxlorg.pki](https://github.com/O-X-L/ansible-role-pki) role that enables you to create and manage a full **P**ublic **K**ey **I**nfrastructure.
 
 
 * **Note:** The certificate file-name (_name variable as defined or else CommonName_) will be updated:

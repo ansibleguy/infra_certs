@@ -1,16 +1,18 @@
 ---
 
 galaxy_info:
-  author: 'AnsibleGuy <guy@ansibleguy.net>'
-  namespace: 'ansibleguy'
+  author: 'Rath Pascal <contact@oxl.at>'
+  namespace: 'oxlorg'
   license: 'MIT'
-  issue_tracker_url: 'https://github.com/ansibleguy/infra_certs/issues'
+  issue_tracker_url: 'https://github.com/O-X-L/ansible-role-certs/issues'
   min_ansible_version: '2.14'
   description: 'Meat-role to generate/manage certificates for other roles'
   platforms:
     - name: Debian
       versions:
         - bullseye
+        - bookworm
+        - trixies
   galaxy_tags:
     - 'certificates'
     - 'certs'
